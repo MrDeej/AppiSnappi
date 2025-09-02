@@ -1,0 +1,167 @@
+﻿@using System.ComponentModel
+@using FamilyApplication.AspireApp.Web.Components.Shared
+@using FamilyApplication.AspireApp.Web.CosmosDb
+@using FamilyApplication.AspireApp.Web.CosmosDb.User
+@using FamilyApplication.AspireApp.Web.Databuffer
+@using FamilyApplication.AspireApp.Web.Sessions
+@using Microsoft.AspNetCore.Components.Authorization
+@implements IDisposable
+@inject LottieFileService LottieFileService
+@inject GlobalVm GlobalVm
+@inject SessionManager SessionManager
+@inject UserDtoDataService UserDtoDataService
+
+<div class="select-lottie-profile">
+	<div class="current-selected">
+		<h2>Nåværende bilde</h2>
+		<LottiePlayer Src="@User.LottieProfile"
+					  Width="96px"
+					  Height="96px"
+					  Style="border-radius: 50%"
+					  Autoplay="true"
+					  Speed="1" />
+	</div>
+
+	<div class="available-lotties">
+		<h2>Velg nytt profilbilde</h2>
+		@if (_lottieFiles != null)
+		{
+			foreach (var lottie in _lottieFiles)
+			{
+				<div @onclick="() => SelectLottie(lottie.Path)"
+					 class="@(lottie.Path == User.LottieProfile ? "lottie-item selected" : "lottie-item")">
+					<LottiePlayer Src="@lottie.Path"
+								  Width="96px"
+								  Height="96px"
+								  Style="border-radius: 50%"
+								  Autoplay="true"
+								  Speed="1" />
+					<span>@lottie.Navn</span>
+				</div>
+			}
+		}
+	</div>
+</div>
+
+@code {
+	private LottieFileRec[]? _lottieFiles;
+	[Parameter] public UserDto User { get; set; } = default!;
+
+	[CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
+	private string? _newSelectedLottie;
+
+	protected override void OnInitialized()
+	{
+		try
+		{
+			if (User != null)
+			{
+				if (string.IsNullOrEmpty(User.LottieProfile))
+				{
+					User.LottieProfile = "/lottie/lottieempty.json";
+				}
+				_newSelectedLottie = User.LottieProfile;
+				User.PropertyChanged += User_PropertyChanged;
+			}
+			_lottieFiles = LottieFileService.GetLottieRecords();
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+
+
+	}
+
+	private void User_PropertyChanged(object? sender, PropertyChangedEventArgs args)
+	{
+		if (args.PropertyName == nameof(User.LottieProfile))
+			StateHasChanged();
+	}
+
+
+
+
+	private async void SelectLottie(string lottiePath)
+	{
+		if (User?.LottieProfile == lottiePath) return;
+		try
+		{
+			using var task = GlobalVm.AddTask($"Lagrer profil {User!.Username}");
+			var token = task.GetToken();
+
+			ArgumentNullException.ThrowIfNull(User);
+
+			var authState = await AuthState;
+			var user = authState.User;
+			ArgumentNullException.ThrowIfNull(user);
+
+
+			User.LottieProfile = lottiePath;
+			User.LastChangeBy = SessionManager.GetMyUserDto().Id;
+			User.LastChangedAt = DateTime.UtcNow;
+
+			await UserDtoDataService.Save(User, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	public void Dispose()
+	{
+		if (User != null)
+			User.PropertyChanged -= User_PropertyChanged;
+	}
+
+}
+
+
+<style>
+	.select-lottie-profile {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.current-selected, .available-lotties {
+		margin-bottom: 20px;
+	}
+
+	.lottie-item {
+		display: inline-block;
+		text-align: center;
+		cursor: pointer;
+		margin: 10px;
+		border: 1px solid #ccc;
+		padding: 10px;
+		border-radius: 5px;
+	}
+
+		.lottie-item:hover {
+			background-color: #f3f3f3;
+		}
+
+		.lottie-item.selected {
+			border: 2px solid #5cb85c; /* Green border for selected item */
+			background-color: #e6e6e6; /* Slightly darker background for selected item */
+		}
+
+	.save-selection button {
+		padding: 10px 20px;
+		font-size: 16px;
+		color: white;
+		background-color: #007bff;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+		.save-selection button:disabled {
+			background-color: #ccc;
+			cursor: not-allowed;
+		}
+
+</style>

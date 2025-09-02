@@ -4,7 +4,7 @@
 
 ## Overview
 
-Family Application (note: project namespace uses "FamiliyApplication" due to a potential spelling typo; consider renaming for consistency) is a collaborative web app designed for families to manage daily activities, events, finances, and communications. It features a shared blackboard for todos, a family events timeline, user wallets with savings goals, notifications, and user profiles. The app is built as a .NET Aspire project, utilizing Blazor for the interactive frontend, CosmosDB for data storage, and Azure infrastructure defined via Bicep templates.
+Family Application is a collaborative web app designed for families to manage daily activities, events, finances, and communications. It features a shared blackboard for todos, a family events timeline, user wallets with savings goals, notifications, and user profiles. The app is built as a .NET Aspire project, utilizing Blazor for the interactive frontend, CosmosDB for data storage, and Azure infrastructure defined via Bicep templates.
 
 This application promotes family organization by allowing members to track todos, schedule events (e.g., birthdays, vacations), manage personal savings, receive notifications, and view shared timelines. It includes real-time elements like periodic data sorting and session tracking.
 
@@ -107,8 +107,6 @@ Contributions are welcome! Please follow these steps:
 3. Commit changes: `git commit -m 'Add YourFeature'`.
 4. Push to the branch: `git push origin feature/YourFeature`.
 5. Open a Pull Request.
-
-Fix the "Familiy" typo in namespaces if contributing major changes.
 
 ## License
 

@@ -1,0 +1,25 @@
+﻿@using FamilyApplication.AspireApp.Web.Components.Shared
+@using FamilyApplication.AspireApp.Web.CosmosDb.Family
+
+
+<div Class="anniversary-card">
+    <div class="event-content">
+        <div class="text-content">
+            <h3>@Event.Title</h3>
+            <p><strong>@Event.Time</strong></p>
+            <BlazorServer.RichtextEditor.RichTextDisplay HtmlValue="@Event.Description" />
+            <p class="extra-info">💞 Spesielle anledninger</p>
+        </div>
+        <LottiePlayer Src="lottie/timeline/lottieLove.json"
+                      Width="100px"
+                      Height="100px"
+                      Style="border-radius: 50%"
+                      Autoplay="true"
+                      Speed="1" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FamilyEvent Event { get; set; }
+}

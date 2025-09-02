@@ -1,0 +1,151 @@
+﻿@using System.ComponentModel
+@using Eiriklb.Utils
+@using FamilyApplication.AspireApp.Web.CosmosDb.User
+@using FamilyApplication.AspireApp.Web.Databuffer
+@using FamilyApplication.AspireApp.Web.Sessions
+@using Microsoft.FluentUI.AspNetCore.Components;
+@implements IDisposable
+@implements IDialogContentComponent<UserDto>
+@inject SessionManager SessionManager
+@inject GlobalVm GlobalVm
+@inject UserDtoDataService UserDtoDataService
+
+
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.EditPerson())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            Rediger brukerprofil
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveChanges">Lagre</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@Cancel">Avbryt</FluentButton>
+</FluentDialogFooter>
+
+<FluentDialogBody>
+    <FluentTabs ShowActiveIndicator=false ActiveTabId="TabOne">
+        <FluentTab Id="TabOne" Label="Opplysninger">
+            <div class="tab-content">
+                <div class="property-group">
+                    <div class="property-field">
+                        <span title="@Content.Id">ID: @(Content.Id.Substring(0, 8))...</span>
+                    </div>
+                    <div class="property-field">
+                        <label>Brukernavn:</label>
+                        <span>@Content.Username</span>
+                    </div>
+                    <div class="property-field">
+                        <label>Fullt Navn:</label>
+                        <FluentTextField @bind-Value="@_lcUser.TempObject.Fullname" />
+                    </div>
+                    <div class="property-field">
+                        <label>Fødselsdag:</label>
+                        <FluentDatePicker Id="birthdate" AriaLabel="To" @bind-Value="@BirtDate" />
+                    </div>
+                    @if (LoggedInUserType == UserType.Parent)
+                    {
+                        <div class="property-field">
+                            <label>Brukertype:</label>
+                            <select @bind="@_lcUser.TempObject.UserType">
+                                <option value="Parent">Parent</option>
+                                <option value="Child">Child</option>
+                            </select>
+                        </div>
+                    }
+                </div>
+            </div>
+        </FluentTab>
+        <FluentTab Id="TabTwo" Label="Profilbilder">
+            <div class="tab-content">
+                <LottieProfileSelector User="@Content" />
+            </div>
+        </FluentTab>
+    </FluentTabs>
+
+</FluentDialogBody>
+
+@code {
+    [Parameter] public UserType LoggedInUserType { get; set; } // Pass the type of the logged-in user
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; } = default!;
+    private LiveCloneObject<UserDto> _lcUser = default!;
+
+    [Parameter]
+    public UserDto Content { get; set; }
+    public DateTime? BirtDate
+    {
+        get
+        {
+            var dateOnly = _lcUser.TempObject.BirthDate;
+            if (dateOnly == new DateOnly(1, 1, 1))
+                return null;
+
+
+            return new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day);
+        }
+        set
+        {
+            if (value == null)
+            {
+                _lcUser.TempObject.BirthDate = new DateOnly(1, 1, 1);
+                return;
+            }
+
+            var dateOnly = new DateOnly(value.Value.Year, value.Value.Month, value.Value.Day);
+            _lcUser.TempObject.BirthDate = dateOnly;
+        }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        LoggedInUserType = SessionManager.GetMyUserDto().UserType ;
+        _lcUser = new LiveCloneObject<UserDto>(Content);
+        _lcUser.PropertyChanged += BrukerPropertyChanged;
+        base.OnInitialized();
+    }
+
+
+
+    private async Task Cancel()
+    {
+        await Dialog.CancelAsync();
+    }
+
+    private async Task SaveChanges()
+    {
+        try
+        {
+            using var task = GlobalVm.AddTask("Lagrer " + _lcUser.TempObject.Username);
+            var token = task.GetToken();
+
+            await UserDtoDataService.Save(_lcUser.TempObject, token);            
+            await Dialog.CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+
+    }
+
+    private void BrukerPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(_lcUser.ErEndret))
+            StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _lcUser.PropertyChanged -= BrukerPropertyChanged;
+        Content.PropertyChanged -= BrukerPropertyChanged;
+    }
+
+}
+

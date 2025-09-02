@@ -1,0 +1,176 @@
+﻿@using Fa.Client.Blazorwasm.Components.Blocks
+@using FamilyApplication.AspireApp.Web.Components.Shared
+@using FamilyApplication.AspireApp.Web.CosmosDb.User
+@using FamilyApplication.AspireApp.Web.CosmosDb.Notification
+@using FamilyApplication.AspireApp.Web.Databuffer
+@implements IDialogContentComponent<UserDto>
+@inject IJSRuntime JSRuntime
+@inject GlobalVm GlobalVm
+@using Icons = Microsoft.FluentUI.AspNetCore.Components.Icons
+@implements IDisposable
+@inject UserDtoDataService UserDtoDataService
+
+<FluentMessageBarProvider Section="Notifikasjoner" MaxMessageCount="1" />
+
+<FluentBodyContent>
+	<div class="notification-panel">
+		@if (Content?.Notifications?.Any() != true)
+		{
+			<FluentCard class="no-notifications">
+				<div class="no-notifications-content">
+					<LottiePlayer Src="/lottie/lottieempty.json" Width="120px" Height="120px" Autoplay="true" Loop="true" />
+					<p>Ingen nye varsler! 😊</p>
+				</div>
+			</FluentCard>
+		}
+		else
+		{
+			<div class="notification-list">
+				@foreach (var notification in Content.Notifications.OrderByDescending(n => n.CreatedAt))
+				{
+					<div @onclick="() => MarkAsRead(notification)">
+						<FluentCard class="@GetNotificationCardClass(notification)" Style="margin-bottom:24px">
+							<FluentStack Orientation="Orientation.Vertical">
+								<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+									@switch (notification.NotificationDtoType)
+									{
+										case NotificationDtoType.Todo:
+											<FluentIcon Value="@(new Icons.Regular.Size24.ClipboardTask())" />
+											break;
+										case NotificationDtoType.Wallet:
+											<FluentIcon Value="@(new Icons.Regular.Size24.Money())" />
+											break;
+										case NotificationDtoType.FamilyEvent:
+											<FluentIcon Value="@(new Icons.Regular.Size24.Calendar())" />
+											break;
+										default:
+											<FluentIcon Value="@(new Icons.Regular.Size24.Info())" />
+											break;
+									}
+									<UserPictureFrame User="@(GlobalVm.UserDtos.SingleOrDefault(a => a.Id == notification.CreatedById))" />
+									<p class="notification-title @(notification.IsUnread ? "unread" : "read")">
+										@notification.Title
+									</p>
+								</FluentStack>
+								<p class="notification-description">
+									@notification.Text
+								</p>
+								<p class="notification-timeago">
+									@GetTimeAgo(notification.CreatedAt)
+								</p>
+							</FluentStack>
+						</FluentCard>
+					</div>
+				}
+			</div>
+		}
+	</div>
+</FluentBodyContent>
+
+@code {
+	[Parameter]
+	public UserDto Content { get; set; } = default!;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			Console.WriteLine("UserNotificationPanel rendered, calling setDialogBackground...");
+			await Task.Delay(500);
+			await JSRuntime.InvokeVoidAsync("setDialogBackground");
+			Console.WriteLine("setDialogBackground called.");
+
+			Content.Notifications.CollectionChanged += Notifications_CollectionChanged;
+
+			foreach (var notification in Content.Notifications)
+				notification.PropertyChanged += Notification_PropertyChanged;
+		}
+	}
+
+	private async void Notifications_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		var changed = false;
+
+		if (e.NewItems != null)
+			foreach (var notification in e.NewItems.OfType<NotificationDto>())
+			{
+				changed = true;
+				notification.PropertyChanged += Notification_PropertyChanged;
+			}
+
+		if (e.OldItems != null)
+			foreach (var notification in e.OldItems.OfType<NotificationDto>())
+			{
+				changed = true;
+				notification.PropertyChanged -= Notification_PropertyChanged;
+			}
+
+		if (!changed)
+			return;
+
+		await this.InvokeAsync(() => this.StateHasChanged());
+	}
+
+
+	private Guid delayGuid;
+	private async void Notification_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName != nameof(NotificationDto.IsUnread))
+			return;
+
+		var tmpGuid = Guid.NewGuid();
+		delayGuid = tmpGuid;
+		await Task.Delay(200);
+		if (delayGuid != tmpGuid)
+			return;
+		this.StateHasChanged();
+
+	}
+
+	public void Dispose()
+	{
+
+		Content.Notifications.CollectionChanged -= Notifications_CollectionChanged;
+
+		foreach (var notification in Content.Notifications)
+			notification.PropertyChanged -= Notification_PropertyChanged;
+	}
+
+	private string GetNotificationCardClass(NotificationDto notification)
+	{
+		return notification.IsUnread ? "notification-card unread" : "notification-card read";
+	}
+
+	private string GetTimeAgo(DateTime createdAt)
+	{
+		var timeSpan = DateTime.Now - createdAt;
+		if (timeSpan.TotalMinutes < 1)
+			return "Akkurat nå";
+		if (timeSpan.TotalHours < 1)
+			return $"{(int)timeSpan.TotalMinutes} minutter siden";
+		if (timeSpan.TotalDays < 1)
+			return $"{(int)timeSpan.TotalHours} timer siden";
+		if (timeSpan.TotalDays < 30)
+			return $"{(int)timeSpan.TotalDays} dager siden";
+		return createdAt.ToString("dd.MM.yyyy");
+	}
+
+	private async Task MarkAsRead(NotificationDto notification)
+	{
+		try
+		{
+			if (notification.IsUnread)
+			{
+
+				notification.IsUnread = false;
+
+				await UserDtoDataService.Save(Content, CancellationToken.None);
+
+			}
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+}

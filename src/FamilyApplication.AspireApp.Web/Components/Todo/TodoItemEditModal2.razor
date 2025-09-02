@@ -1,0 +1,53 @@
+﻿
+@using FamilyApplication.AspireApp.Web.Databuffer
+@using Microsoft.FluentUI.AspNetCore.Components
+@implements IDialogContentComponent<TodoItemEditModal2Dto>
+@inject GlobalVm GlobalVm
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Money())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Tittel
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveChanges">Lagre</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@Cancel">Avbryt</FluentButton>
+</FluentDialogFooter>
+
+<FluentDialogBody>
+    <FluentTextField Label="Tittel" @bind-Value="@Content.Todo.Tittel" />
+    <FluentNumberField Label="Valgfri Betaling" @bind-Value="@Content.Todo.PayAmount" />
+    <FluentSelect Label="Tildel til" ValueChanged="@(e=>Content.Todo.UserIdBelongsTo = e)"
+                  TOption="string"
+                  Id="people-listbox"
+                  Width="200px"
+                  Height="250px">
+        <FluentOption Value="null"></FluentOption>
+        @foreach(var user in GlobalVm.UserDtos)
+        {
+            <FluentOption Value="@user.Id" Selected="@(user.Id == Content.Todo.UserIdBelongsTo)">@user.Surname</FluentOption>
+        }
+    </FluentSelect>
+    @* @bind-SelectedOption="@SelectedPerson" *@
+</FluentDialogBody>
+@code {
+    [Parameter] public TodoItemEditModal2Dto Content { get; set; } = default!;
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+    public string Tittel => Content.IsNew ? "Ny oppgave" : "Rediger oppgave";
+
+
+    private async void SaveChanges()
+    {
+        await Dialog.CloseAsync(Content);
+    }
+
+    private async void Cancel()
+    {
+        await Dialog.CancelAsync();
+    }
+}

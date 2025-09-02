@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@using Components.Layout
+@using FamilyApplication.AspireApp.Web.Components.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@layout NotLoggedInLayout
+@attribute [AllowAnonymous]
+<PageTitle>AppiSnappi</PageTitle>
+
+<div style="background-color: #C8E6C9; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100dvh; text-align: center; margin: auto;">
+    <h3 style="font-family: 'Arial', sans-serif; color: #333;">Velkommen til AppiSnappi (Familieappen v2)</h3>
+
+    <LottiePlayer Src="lottie/lottiefamily2.json"
+								  Style="border-radius: 50%"
+								  Autoplay="true"
+								  Width="300px"
+                                  Height="300px"
+								  Speed="1" />
+    <a href="/home"
+                style="width: 300px; text-align: center; display: inline-block; padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">
+        Logg på her
+    </a>
+</div>
+
+@code {
+
+
+    private void Logon()
+    {
+        NavigationManager.NavigateTo("/home");
+    }
+}

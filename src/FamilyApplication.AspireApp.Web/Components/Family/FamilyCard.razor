@@ -1,0 +1,28 @@
+﻿@using FamilyApplication.AspireApp.Web.Components.Shared
+@using FamilyApplication.AspireApp.Web.CosmosDb.Family
+
+
+
+@code {
+	[Parameter] public FamilyDto FamilieData { get; set; } = default!;
+}
+
+<div class="card">
+	<div class="card-header">
+		<LottiePlayer Src="lottie/lottiefamily.json"
+					  Width="50px"
+					  Height="50px"
+					  Style="border-radius: 50%"
+					  Autoplay="true"
+					  Speed="1" />
+
+		Min Familie
+	</div>
+	<div class="card-body">
+		<p>Id: @FamilieData.Id.Substring(0, 8))...</p>
+		<p>Navn: @FamilieData.Navn</p>
+		<p>Opprettet Tid: @FamilieData.OpprettetTid.ToLocalTime()</p>
+		<p>Opprettet Av: @FamilieData.OpprettetAv</p>
+		<p>Familie Kode: @FamilieData.FamilieKode</p>
+	</div>
+</div>

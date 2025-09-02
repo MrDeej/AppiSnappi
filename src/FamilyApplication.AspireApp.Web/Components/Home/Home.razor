@@ -1,0 +1,167 @@
+﻿@page "/home"
+@using FamilyApplication.AspireApp.Web.Components.FamilyEvents
+@using FamilyApplication.AspireApp.Web.Components.Todo
+@using FamilyApplication.AspireApp.Web.CosmosDb.Family
+@using FamilyApplication.AspireApp.Web.CosmosDb.User
+@using FamilyApplication.AspireApp.Web.Databuffer
+@using FamilyApplication.AspireApp.Web.Notifications
+@using FamilyApplication.AspireApp.Web.Sessions
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject NavigationManager Navigation
+@inject ActivitesEngine ActivitesEngine
+@inject SessionManager SessionManager
+@inject UserDtoDataService UserDtoDataService
+@inject GlobalVm GlobalVm
+@inject NotificationManager NotificationManager
+@inject IDialogService DialogService
+@attribute [Authorize]
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+@inject FamilyEventService FamilyEventService
+
+<PageTitle>AppiSnappi</PageTitle>
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="10">
+
+	<h1 tabindex="-1">Hallo familien, og velkommen til appen vår!</h1>
+
+	@if (!IsIOS)
+	{
+		<NotificationRequester />
+	}
+
+	@if (MyUserDto != null)
+	{
+		<Fa.Client.Blazorwasm.Components.Users.UserCard User="@SessionManager.GetMyUserDto()" />
+	}
+	@if (ActivitesEngine.ObsCollTodosToApprove.Count > 0)
+	{
+		<h3>Oppgaver til godkjenning:</h3>
+		@foreach (var todo in ActivitesEngine.ObsCollTodosToApprove)
+		{
+			<TodoItem Todo="todo" OnTodoApproveRequest="@OnTodoApproveRequest" OnTodoDeleteRequest="@OnTodoDeleteRequest" OnTodoAddOrUpdateRequest="@OnTodoAddOrUpdateRequest" />
+
+		}
+	}
+
+	<FamilyTimeline Events="@FamilyEventService.ObsColl3Neste"
+	Title="Kommende events"
+	AllowAdd="false"
+	AllowEdit="false" />
+
+</FluentStack>
+
+@code
+{
+	private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+	[CascadingParameter]
+	private Task<AuthenticationState>? AuthState { get; set; }
+	private bool IsIOS = true;
+	private UserDto? MyUserDto { get; set; }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			try
+			{
+				IsIOS = await JSRuntime.InvokeAsync<bool>("isIOS");
+				this.StateHasChanged();
+			}
+			catch (Exception ex)
+			{
+				GlobalVm.AddException(ex);
+			}
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (AuthState == null)
+		{
+			return;
+		}
+
+		MyUserDto = SessionManager.GetMyUserDto();
+
+		var authState = await AuthState;
+		claims = authState.User.Claims;
+
+		ActivitesEngine.SomethingHasChanged += SomeThingChanges;
+		FamilyEventService.TreNesteHasChanged += SomeThingChanges;
+	}
+
+
+	private async void SomeThingChanges(object? o, EventArgs eventArgs)
+	{
+		await this.InvokeAsync(() => this.StateHasChanged());
+	}
+
+	public void Dispose()
+	{
+		ActivitesEngine.SomethingHasChanged -= SomeThingChanges;
+		FamilyEventService.TreNesteHasChanged -= SomeThingChanges;
+
+	}
+
+	private async Task OnTodoApproveRequest(FamilyTodoDto todo)
+	{
+		try
+		{
+
+			var myUser = SessionManager.GetMyUserDto();
+			ArgumentNullException.ThrowIfNull(todo.UserIdBelongsTo);
+			using var task = GlobalVm.AddTask("Legger til..");
+			var token = task.GetToken();
+
+			await UserDtoDataService.ApproveTodoToApprove(todo, todo.UserIdBelongsTo, myUser.Id, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	private async Task OnTodoDeleteRequest(FamilyTodoDto todo)
+	{
+		try
+		{
+			var myUser = SessionManager.GetMyUserDto();
+			ArgumentNullException.ThrowIfNull(todo.UserIdBelongsTo);
+			using var task = GlobalVm.AddTask("Sletter");
+			var token = task.GetToken();
+
+
+			await UserDtoDataService.DeleteTodoToApprove(todo.Id, todo.UserIdBelongsTo, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	private async Task OnTodoAddOrUpdateRequest(FamilyTodoDto todo)
+	{
+		try
+		{
+			var myUser = SessionManager.GetMyUserDto();
+			ArgumentNullException.ThrowIfNull(todo.UserIdBelongsTo);
+			using var task = GlobalVm.AddTask("Lagrer endringer..");
+			var token = task.GetToken();
+
+
+			await UserDtoDataService.UpdateTodoToApprove(todo, todo.UserIdBelongsTo, myUser.Id, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+
+}

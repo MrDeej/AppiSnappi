@@ -1,0 +1,26 @@
+﻿@using Fa.Client.Blazorwasm.Components.Blocks
+@using FamilyApplication.AspireApp.Web.Components.Shared
+@using FamilyApplication.AspireApp.Web.CosmosDb.Family
+@using FamilyApplication.AspireApp.Web.Databuffer
+@inject GlobalVm GlobalVm
+
+<div Class="birthday-card">
+	<div class="event-content">
+		<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+			<UserPictureFrame User="@(GlobalVm.UserDtos.SingleOrDefault(a=>a.Id == Event.Tag))" ShowFirstName="true" />
+			<span class="title">@Event.Title</span>
+		</FluentStack>
+		        <LottiePlayer Src="lottie/timeline/lottieBirthday.json"
+                      Width="100px"
+                      Height="100px"
+                      Style="border-radius: 50%"
+                      Autoplay="true"
+                      Speed="1" />
+
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public required FamilyEvent Event { get; set; }
+}

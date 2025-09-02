@@ -1,0 +1,88 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35617.110
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServer.RichtextEditor", "..\submodules\BlazorServer.RichtextEditor\src\BlazorServer.RichtextEditor\BlazorServer.RichtextEditor.csproj", "{B42DEEB7-AB4F-952D-55A4-93CE966B0C00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServerCommon", "..\submodules\BlazorServerCommon\scr\BlazorServerCommon\BlazorServerCommon.csproj", "{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiriklb.Utils", "..\submodules\Eiriklb.Utils\src\Eiriklb.Utils\Eiriklb.Utils.csproj", "{7E6443B8-B345-E246-47F4-855C00512999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eiriklb.Utils.Tests", "..\submodules\Eiriklb.Utils\src\Eiriklb.Utils.Tests\Eiriklb.Utils.Tests.csproj", "{F1224DBE-0CDC-4666-F9F6-8A14A520D926}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XXL.CbsSearch", "..\submodules\XXL.SharedModels\src\XXL.CbsSearch\XXL.CbsSearch.csproj", "{C147A558-4DA4-242B-097F-9D38C26482E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XXL.Syncjobs", "..\submodules\XXL.SharedModels\src\XXL.Syncjobs\XXL.Syncjobs.csproj", "{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.AppHost", "FamilyApplication.AspireApp.AppHost\FamilyApplication.AspireApp.AppHost.csproj", "{47B7CE38-8818-CD48-956E-719AE70D15E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.ServiceDefaults", "FamilyApplication.AspireApp.ServiceDefaults\FamilyApplication.AspireApp.ServiceDefaults.csproj", "{8B78D6A2-F5AA-B4EA-75D1-54CE7171A50F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.Tests", "FamilyApplication.AspireApp.Tests\FamilyApplication.AspireApp.Tests.csproj", "{8C95FA5D-6959-F3D9-2E4A-96499E10F263}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.Web", "FamilyApplication.AspireApp.Web\FamilyApplication.AspireApp.Web.csproj", "{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B42DEEB7-AB4F-952D-55A4-93CE966B0C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B42DEEB7-AB4F-952D-55A4-93CE966B0C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B42DEEB7-AB4F-952D-55A4-93CE966B0C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B42DEEB7-AB4F-952D-55A4-93CE966B0C00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E6443B8-B345-E246-47F4-855C00512999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E6443B8-B345-E246-47F4-855C00512999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E6443B8-B345-E246-47F4-855C00512999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6443B8-B345-E246-47F4-855C00512999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1224DBE-0CDC-4666-F9F6-8A14A520D926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1224DBE-0CDC-4666-F9F6-8A14A520D926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1224DBE-0CDC-4666-F9F6-8A14A520D926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1224DBE-0CDC-4666-F9F6-8A14A520D926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C147A558-4DA4-242B-097F-9D38C26482E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C147A558-4DA4-242B-097F-9D38C26482E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C147A558-4DA4-242B-097F-9D38C26482E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C147A558-4DA4-242B-097F-9D38C26482E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47B7CE38-8818-CD48-956E-719AE70D15E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47B7CE38-8818-CD48-956E-719AE70D15E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47B7CE38-8818-CD48-956E-719AE70D15E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B7CE38-8818-CD48-956E-719AE70D15E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B78D6A2-F5AA-B4EA-75D1-54CE7171A50F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B78D6A2-F5AA-B4EA-75D1-54CE7171A50F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B78D6A2-F5AA-B4EA-75D1-54CE7171A50F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B78D6A2-F5AA-B4EA-75D1-54CE7171A50F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C95FA5D-6959-F3D9-2E4A-96499E10F263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C95FA5D-6959-F3D9-2E4A-96499E10F263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C95FA5D-6959-F3D9-2E4A-96499E10F263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C95FA5D-6959-F3D9-2E4A-96499E10F263}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B42DEEB7-AB4F-952D-55A4-93CE966B0C00} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{4A597D62-5A14-33F8-16BF-D7CA01CBFE1A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7E6443B8-B345-E246-47F4-855C00512999} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F1224DBE-0CDC-4666-F9F6-8A14A520D926} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C147A558-4DA4-242B-097F-9D38C26482E4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BAEFA23A-0D40-7445-D038-0EF0F34C0F4D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1A36D9C-DD97-43B7-92FC-836401B2B1E5}
+	EndGlobalSection
+EndGlobal
