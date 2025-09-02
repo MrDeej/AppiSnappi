@@ -14,10 +14,10 @@
     <PackageReference Include="Aspire.Azure.Security.KeyVault" Version="9.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.8" />
+    <ProjectReference Include="..\..\submodules\BlazorServer.RichtextEditor\src\BlazorServer.RichtextEditor\BlazorServer.RichtextEditor.csproj" />
+    <ProjectReference Include="..\..\submodules\BlazorServerCommon\scr\BlazorServerCommon\BlazorServerCommon.csproj" />
+    <ProjectReference Include="..\..\submodules\Eiriklb.Utils\src\Eiriklb.Utils\Eiriklb.Utils.csproj" />
     <ProjectReference Include="..\FamiliyApplication.AspireApp.ServiceDefaults\FamiliyApplication.AspireApp.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\submodules\BlazorServer.RichtextEditor\src\BlazorServer.RichtextEditor\BlazorServer.RichtextEditor.csproj" />
-    <ProjectReference Include="..\submodules\BlazorServerCommon\scr\BlazorServerCommon\BlazorServerCommon.csproj" />
-    <ProjectReference Include="..\submodules\Eiriklb.Utils\src\Eiriklb.Utils\Eiriklb.Utils.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.8" />
 
