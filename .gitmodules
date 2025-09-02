@@ -1,0 +1,12 @@
+[submodule "submodules/BlazorServer.RichtextEditor"]
+	path = submodules/BlazorServer.RichtextEditor
+	url = https://github.com/MrDeej/BlazorServer.RichtextEditor
+[submodule "submodules/BlazorServerCommon"]
+	path = submodules/BlazorServerCommon
+	url = https://github.com/MrDeej/BlazorServerCommon
+[submodule "submodules/Eiriklb.Utils"]
+	path = submodules/Eiriklb.Utils
+	url = https://github.com/MrDeej/Eiriklb.Utils
+[submodule "submodules/XXL.SharedModels"]
+	path = submodules/XXL.SharedModels
+	url = https://github.com/MrDeej/XXL.SharedModels
