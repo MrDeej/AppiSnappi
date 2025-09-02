@@ -1,0 +1,111 @@
+﻿@if (Amount < 0)
+{
+	<div class="currency-container" >
+		<FluentLabel Style="color:red; margin-left:4px; margin-right:4px ">
+			-@(-Amount) kr
+			</FluentLabel>
+
+	</div>
+}
+else
+{
+	<div class="currency-container">
+		@{
+			string? lastDenominatorValue = null;
+			@foreach (var (denominator, value) in MoneyRepresentation)
+			{
+				if (lastDenominatorValue != null && lastDenominatorValue != denominator + value)
+				{
+					<span class="plus-symbol">+</span>
+				}
+				lastDenominatorValue = denominator + value;
+
+				if (denominator == "note")
+				{
+
+					<div class="@($"currency-note currency-{denominator}-{value} {(IsNew(value) ? "new" : "")}")" data-value="@($"{value} kr")">
+						@($"{value} kr")
+					</div>
+
+				}
+				else if (denominator == "coin" && value > 10)
+				{
+					<div class="@($"currency-coin-gold {(IsNew(value) ? "new" : "")}")" data-value="@($"{value} kr")">
+						@($"{value} kr")
+					</div>
+				}
+				else if (denominator == "coin")
+				{
+					<div class="@($"currency-coin-silver {(IsNew(value) ? "new" : "")}")" data-value="@($"{value} kr")">
+						@($"{value} kr")
+					</div>
+				}
+
+			}
+		}
+	</div>
+}
+@code {
+	[Parameter]
+	public int Amount { get; set; }
+	private int PreviousAmount { get; set; }
+
+	private List<(string Denominator, int Value)> MoneyRepresentation { get; set; } = new List<(string Type, int Value)>();
+	private List<(string Denominator, int Value)> PreviousMoneyRepresentation { get; set; } = new List<(string Type, int Value)>();
+
+
+	private readonly int[] _notes = [1000, 500, 200, 100];
+	private readonly int[] _coins = [20, 10, 5, 1];
+
+
+	private void UpdateAmount(ChangeEventArgs e)
+	{
+		if (int.TryParse(e.Value?.ToString(), out var newAmount))
+		{
+			Amount = newAmount;
+			CalculateMoneyRepresentation();
+		}
+	}
+	protected override void OnParametersSet()
+	{
+		if (PreviousAmount != Amount)
+		{
+			PreviousMoneyRepresentation = new List<(string Type, int Value)>(MoneyRepresentation);
+			PreviousAmount = Amount;
+			CalculateMoneyRepresentation();
+		}
+	}
+
+	private void CalculateMoneyRepresentation()
+	{
+		MoneyRepresentation.Clear();
+		var remainingAmount = (int)Amount;
+
+		foreach (var note in _notes)
+		{
+			while (remainingAmount >= note)
+			{
+				MoneyRepresentation.Add(("note", note));
+				remainingAmount -= note;
+			}
+		}
+
+		foreach (var coin in _coins)
+		{
+			while (remainingAmount >= coin)
+			{
+				MoneyRepresentation.Add(("coin", coin));
+				remainingAmount -= coin;
+			}
+		}
+	}
+
+	private bool IsNew(int value)
+	{
+		// return false;
+		// Logic to determine if the value is new
+		// For example, you could check if the value is present in the previous representation
+		// Note: This logic is simplified and needs to be adapted to your specific requirements
+		return PreviousMoneyRepresentation.All(c => c.Value != value);
+	}
+}

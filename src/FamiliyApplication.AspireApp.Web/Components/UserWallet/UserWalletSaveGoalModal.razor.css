@@ -1,0 +1,156 @@
+﻿.save-goal-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.save-goal-modal-dialog {
+    background-color: #FFFFFF; /* Solid background color */
+    border-radius: 15px; /* Rounded corners for the modal */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a pop-up effect */
+    width: 90%; /* Adjust width for mobile responsiveness */
+    max-width: 600px; /* Max width for larger screens */
+    max-height: 90vh; /* Maximum height to ensure it doesn't go off-screen */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.save-goal-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items:  stretch; 
+    gap: 1rem; /* Space between items */
+    padding: 20px; /* Padding inside the modal */
+}
+
+.save-goal-lottie-animation {
+    flex: 1;
+    padding: 1rem; /* Padding around the Lottie animation */
+}
+
+.save-goal-form-container {
+    flex: 2;
+    padding: 1rem;
+}
+
+.form-control {
+    width: calc(100% - 1.6rem); /* Full width minus the padding on both sides */
+    margin-bottom: 1rem; /* Space between form inputs */
+    padding: .8rem; /* Padding inside form inputs */
+    border-radius: .5rem; /* Rounded corners for inputs */
+    border: 1px solid #ccc; /* Border for inputs */
+    font-size: 1rem; /* Adjust font size if needed for better visibility */
+}
+
+.save-goal-modal-title {
+    font-size: 1.5rem; /* Set the font size for the title */
+    text-align: center; /* Center the title text */
+    color: #333; /* Dark color for the text */
+    margin-bottom: 1rem; /* Space below the title */
+    padding-bottom: .5rem; /* Space within the title area */
+    border-bottom: 1px solid #ccc; /* A line to separate the title from the rest of the content */
+}
+
+.save-goal-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem; /* Space between buttons */
+}
+
+.btn {
+    padding: .8rem;
+    border: none;
+    border-radius: .5rem;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #4CAF50; /* Green background for visibility */
+    color: white; /* White text for contrast */
+    font-weight: bold; /* Make the text bold */
+    text-transform: uppercase; /* UPPERCASE text for a button-like appearance */
+    margin: 0.5rem 0; /* Add margin to separate buttons from other elements */
+}
+
+.btn:hover {
+    background-color: #367C2B; /* A darker green on hover for feedback */
+    color: #FFF; /* Maintain white text on hover */
+}
+
+/* Specific style for the cancel button to differentiate it from the create button */
+.btn-cancel {
+    background-color: #FF5722; /* Reddish background for the cancel action */
+}
+
+.btn-cancel:hover {
+    background-color: #E64A19; /* Darker reddish on hover */
+}
+
+@media (max-width: 576px) { /* Adjustments for small screens */
+    .save-goal-modal-dialog {
+        width: 95%; /* More width for very small screens */
+    }
+
+    .save-goal-lottie-animation,
+    .save-goal-form-container {
+        padding: .5rem; /* Less padding for small screens */
+    }
+
+    .form-control {
+        padding: .6rem; /* Smaller padding for form controls */
+    }
+
+    .save-goal-modal-buttons {
+        flex-direction: column; /* Stack buttons on top of each other */
+    }
+}
+
+.save-goal-modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .save-goal-modal-buttons button:hover {
+        background-color: #e0e0e0;
+    }
+
+
+/* Styles for delete confirmation UI */
+.confirm-delete-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.confirm-delete-label {
+    color: #f44336; /* Red color for warning text */
+    font-size: .9rem; /* Smaller font size */
+}
+
+.confirm-delete-input {
+    margin: .5rem 0;
+}
+
+.btn-delete {
+    background-color: #f44336; /* Red background for delete button */
+    /* Other styles as needed */
+}
+
+.btn-confirm-delete {
+    background-color: #4CAF50; /* Green background for confirm button */
+    /* Other styles as needed */
+}
+
+.btn-cancel-delete {
+    /* Styles for cancel delete button */
+}
+

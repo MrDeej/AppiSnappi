@@ -1,0 +1,15 @@
+﻿@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+
+<div Class="home-event-card">
+    <div class="event-content">
+        <h3>@Event.Title</h3>
+        <p><strong>@Event.Time</strong></p>
+        <BlazorServer.RichtextEditor.RichTextDisplay HtmlValue="@Event.Description" />
+        <p class="extra-info">🏡 Hjemme</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FamilyEvent Event { get; set; }
+}

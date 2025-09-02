@@ -1,0 +1,340 @@
+﻿@page "/blackboard"
+@using System.Collections.ObjectModel
+@using Eiriklb.Utils
+@using FamiliyApplication.AspireApp.Web.Components.Users
+@using FamiliyApplication.AspireApp.Web.CosmosDb.BlackBoard
+@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using FamiliyApplication.AspireApp.Web.Sessions
+@using Microsoft.FluentUI.AspNetCore.Components
+@using System.ComponentModel
+@using System.Collections.Specialized
+@implements IDisposable
+@inject GlobalVm GlobalVm
+@inject IDialogService DialogService
+@inject SessionManager SessionManager
+@inject FamilyDtoDataService FamilyDtoDataService
+@inject BlackBoardDtoDataService BlackBoardDtoDataService
+@inject UserDtoDataService UserDtoDataService
+
+<FluentLayout>
+	<FluentStack>
+		<h3>Tavle oppgaver</h3>
+		<FluentSpacer />
+		@if (_visRedigering)
+		{
+			<FluentButton IconStart="@(new Icons.Regular.Size20.New())" OnClick="@CreateNew">Opprett ny</FluentButton>
+		}
+		@if (SessionManager.GetMyUserDto().UserType == UserType.Parent)
+		{
+			@if (_visRedigering)
+			{
+				<FluentButton IconStart="@(new Icons.Filled.Size20.Edit())" OnClick="@(()=> _visRedigering = !_visRedigering)"></FluentButton>
+			}
+			else
+			{
+				<FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" OnClick="@(()=> _visRedigering = !_visRedigering)"></FluentButton>
+			}
+		}
+	</FluentStack>
+	<FluentBodyContent>
+		<div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px;">
+
+			@foreach (var blackBoardTodoDto in GlobalVm.BlackBoardDtos) // Sort within groups by count
+			{
+				<FluentCard style="width: 250px; height: 350px;">
+					<FluentStack Orientation="Orientation.Vertical" Style="height:100%">
+						<FluentLabel Typo="Typography.Header" Style="width:100%;">@blackBoardTodoDto.Todo.Tittel</FluentLabel>
+						<FluentDivider />
+						<FluentLabel Typo="Typography.Body" Style="width:100%;">@blackBoardTodoDto.Todo.Description</FluentLabel>
+						<FluentDivider />
+						@if (blackBoardTodoDto.Todo.PayAmount != null)
+						{
+							<div style="margin-top:8px; margin-bottom:8px">
+								<MoneyVisualizer Amount="@blackBoardTodoDto.Todo.PayAmount.Value" />
+							</div>
+						}
+						@if (blackBoardTodoDto.ListPerformed != null && blackBoardTodoDto.ListPerformed.Count > 0)
+						{
+							<FluentLabel Id="labelPerformedBy" Typo="Typography.Body" Style="width:100%;">Sist utført av: @(GlobalVm.UserDtos.SingleOrDefault(a => a.Id == blackBoardTodoDto.ListPerformed.First().UserId)?.Surname)</FluentLabel>
+							<FluentLabel Typo="Typography.Body" Style="width:100%;">Har vært utført @(blackBoardTodoDto.ListPerformed.Count) ganger</FluentLabel>
+
+							<FluentTooltip Anchor="labelPerformedBy">
+								@foreach (var performed in blackBoardTodoDto.ListPerformed)
+								{
+									<FluentLabel>(@GlobalVm.UserDtos.SingleOrDefault(a => a.Id == performed.UserId)?.Surname + " har utført den " + @performed.At.ToLocalTime())</FluentLabel>
+								}
+							</FluentTooltip>
+
+						}
+
+
+						<FluentSpacer />
+						@if (!_visRedigering)
+						{
+							<FluentButton IconStart="@(new Icons.Regular.Size16.TaskListSquareLtr())" Style="width:100%" Appearance="Appearance.Accent" OnClick="@(()=>PerformTodo(blackBoardTodoDto))">Utfør oppgaven</FluentButton>
+						}
+						@if (_visRedigering)
+						{
+
+							<FluentFooter>
+								<FluentDivider />
+
+								<FluentStack Orientation="Orientation.Horizontal">
+									<FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" OnClick="@(()=> Edit(blackBoardTodoDto))">Rediger</FluentButton>
+									<FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" OnClick="@(()=>Delete(blackBoardTodoDto))">Slett</FluentButton>
+								</FluentStack>
+
+							</FluentFooter>
+						}
+					</FluentStack>
+				</FluentCard>
+			}
+		</div>
+	</FluentBodyContent>
+
+</FluentLayout>
+
+@code {
+	bool _visRedigering;
+
+
+	private async void PerformTodo(BlackBoardTodoDto blackBoardTodoDto)
+	{
+		try
+		{
+			using var task = GlobalVm.AddTask("Sjekker oppgave");
+			var token = task.GetToken();
+
+			var dto = new BlackBoardPerformTodoModalDto()
+			{
+
+			};
+
+			DialogParameters parameters = new()
+				{
+					Title = $"Gjennomfør todo",
+					PrimaryAction = "Lagre",
+					PrimaryActionEnabled = false,
+					SecondaryAction = "Avbryt",
+					Width = "400px",
+					TrapFocus = true,
+					Modal = true,
+					PreventScroll = true
+				};
+
+			var dialog = await DialogService.ShowDialogAsync<BlackBoardPerformTodoModal>(dto, parameters);
+			var result = await dialog.Result;
+
+
+			if (result is not { Data: BlackBoardPerformTodoModalDto res, Cancelled: false })
+				return;
+			var myUser = SessionManager.GetMyUserDto();
+
+			if(string.IsNullOrEmpty(myUser.FamilyId))
+			{
+				throw new Exception($"FamilyId var null på bruker: {myUser.Username}");
+			}
+
+
+
+			await UserDtoDataService.PerformTodoFromBlackboard(blackBoardTodoDto, myUser.Id, myUser.Id, token);
+
+			await DialogService.ShowSuccessAsync("Opprettet oppgave og sendt til godkjenning", "Oppgave");
+			this.StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+
+	}
+
+	private async void CreateNew()
+	{
+		try
+		{
+			var myUser = SessionManager.GetMyUserDto();
+
+			ArgumentNullException.ThrowIfNull(myUser.FamilyId);
+
+			DialogParameters parameters = new()
+				{
+					Title = $"Rediger todo",
+					PrimaryAction = "Lagre",
+					PrimaryActionEnabled = false,
+					SecondaryAction = "Avbryt",
+					Width = "400px",
+					TrapFocus = true,
+					Modal = true,
+					PreventScroll = true
+				};
+
+			var dto = new BlackBoardItemModalDto()
+				{
+					Dto = new BlackBoardTodoDto()
+					{
+						FamilyId = myUser.FamilyId,
+						Id = Guid.NewGuid().ToString(),
+						Todo = new()
+						{
+							Id = Guid.NewGuid().ToString()
+						},
+						CreatedAt = DateTime.UtcNow
+					},
+					IsNew = true,
+					ObsCollPerformed = new()
+
+				};
+
+			var dialog = await DialogService.ShowDialogAsync<BlackBoardItemModal>(dto, parameters);
+			var result = await dialog.Result;
+
+
+			if (result is not { Data: BlackBoardItemModalDto res, Cancelled: false })
+				return;
+
+
+			using var task = GlobalVm.AddTask("Lagrer ny..");
+			var token = task.GetToken();
+
+
+			await BlackBoardDtoDataService.AddBlackBoardTodo(dto.Dto, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	private async void Edit(BlackBoardTodoDto dto)
+	{
+		try
+		{
+
+			DialogParameters parameters = new()
+				{
+					Title = $"Rediger todo",
+					PrimaryAction = "Lagre",
+					PrimaryActionEnabled = false,
+					SecondaryAction = "Avbryt",
+					Width = "600px",
+					TrapFocus = true,
+					Modal = true,
+					PreventScroll = true
+				};
+
+
+			var cloneTodo = new FamilyTodoDto();
+			ObjectSync.Instance.Update(cloneTodo, dto.Todo);
+
+
+			IEnumerable<BlackBoardItemModalDtoPerformed> modalPerformed = Array.Empty<BlackBoardItemModalDtoPerformed>();
+
+
+			var modalDto = new BlackBoardItemModalDto()
+				{
+					Dto = new BlackBoardTodoDto()
+					{
+						FamilyId = dto.FamilyId,
+						Id = dto.Id,
+						Todo = cloneTodo
+					},
+					ObsCollPerformed = new ObservableCollection<BlackBoardItemModalDtoPerformed>(modalPerformed),
+					IsNew = false
+				};
+
+			var dialog = await DialogService.ShowDialogAsync<BlackBoardItemModal>(modalDto, parameters);
+			var result = await dialog.Result;
+
+
+			if (result is not { Data: BlackBoardItemModalDto res, Cancelled: false })
+				return;
+
+
+			using var task = GlobalVm.AddTask("Lagrer ny..");
+			var token = task.GetToken();
+
+			await BlackBoardDtoDataService.EditBlackBoardTodo(res.Dto, token);
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	private async void Delete(BlackBoardTodoDto dto)
+	{
+		try
+		{
+			var dialog = await DialogService.ShowConfirmationAsync($"Du skal til å slette {dto.Todo.Tittel}...", "Slett i vei!", "Nope", "Sletteforespørsel");
+			var result = await dialog.Result;
+			if (result.Cancelled)
+				return;
+
+
+			using var task = GlobalVm.AddTask("Sletter tavleoppgave");
+			var token = task.GetToken();
+
+			await BlackBoardDtoDataService.DeleteBlackBoardTodo(dto.Id, token);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	protected override void OnInitialized()
+	{
+		GlobalVm.BlackBoardDtos.CollectionChanged += StartStateChanged;
+
+		foreach (var dto in GlobalVm.BlackBoardDtos)
+		{
+			dto.PropertyChanged += BlackBoardDtoPropertyChanged;
+			dto.Todo.PropertyChanged += BlackBoardDtoPropertyChanged;
+		}
+	}
+
+	private async void BlackBoardDtoPropertyChanged(object? o, EventArgs e)
+	{
+		await this.InvokeAsync(() => this.StateHasChanged());
+	}
+
+	private async void StartStateChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		await this.InvokeAsync(() => this.StateHasChanged());
+
+		if (e.NewItems != null)
+		{
+			foreach (var dto in e.NewItems.OfType<BlackBoardTodoDto>())
+			{
+				dto.PropertyChanged += BlackBoardDtoPropertyChanged;
+				dto.Todo.PropertyChanged += BlackBoardDtoPropertyChanged;
+			}
+		}
+
+		if (e.OldItems != null)
+		{
+			foreach (var dto in e.OldItems.OfType<BlackBoardTodoDto>())
+			{
+				dto.PropertyChanged -= BlackBoardDtoPropertyChanged;
+				dto.Todo.PropertyChanged -= BlackBoardDtoPropertyChanged;
+			}
+		}
+
+
+	}
+
+	public void Dispose()
+	{
+		GlobalVm.BlackBoardDtos.CollectionChanged -= StartStateChanged;
+		foreach (var dto in GlobalVm.BlackBoardDtos)
+		{
+			dto.PropertyChanged -= BlackBoardDtoPropertyChanged;
+			dto.Todo.PropertyChanged -= BlackBoardDtoPropertyChanged;
+		}
+	}
+}

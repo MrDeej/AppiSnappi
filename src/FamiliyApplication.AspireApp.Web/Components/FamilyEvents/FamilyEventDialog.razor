@@ -1,0 +1,89 @@
+﻿@* FamilyEventDialog.razor *@
+@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+@implements IDialogContentComponent<FamilyEventDialogDto>
+@inject IDialogService DialogService
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="10">
+    <FluentSelect TOption="string"
+                  Label="Event Type"
+                  Multiple="false"
+                  ValueChanged="@(a => OnSelectedEventTypeChanged(a))">
+        @foreach (FamilieEventType type in Enum.GetValues(typeof(FamilieEventType)))
+        {
+            <FluentOption TOption="string" Selected="@(type == Content.FamilyEvent.Type)" Disabled=@(type == FamilieEventType.Bursdag) Value="@type.ToString()">@type.ToString()</FluentOption>
+        }
+    </FluentSelect>
+    <FluentTextField Label="Tittel" @bind-Value="Content.FamilyEvent.Title" Required="true" />
+    <BlazorServer.RichtextEditor.RichTextEditor Label="Beskrivelse" SavedHtmlValue="@Content.FamilyEvent.Description" HtmlValueChanged="@(a => Content.FamilyEvent.Description = a)" />
+    <FluentTextField Label="Tid (e.g., 10:00)" @bind-Value="Content.FamilyEvent.Time" Required="true" />
+    <FluentDatePicker Label="Dato" Value="@Content.FamilyEvent.Date"
+                      ValueChanged="@(e => OnDateChanged(e.GetValueOrDefault()))" Required="true" />
+    @if (Content.FamilyEvent.Type == FamilieEventType.Ferie)
+    {
+        <FluentDatePicker Value="@Content.FamilyEvent.EndDate" Label="Slutt dato"
+                          ValueChanged="@(e => Content.FamilyEvent.EndDate = e.GetValueOrDefault())" />
+    }
+</FluentStack>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" @onclick="Save">Lagre</FluentButton>
+    @if (Content.AllowDelete)
+    {
+        <FluentButton Appearance="Appearance.Neutral" @onclick="Delete">Slett</FluentButton>
+    }
+    <FluentButton Appearance="Appearance.Neutral" @onclick="Cancel">Avbryt</FluentButton>
+</FluentDialogFooter>
+
+@code {
+    [Parameter]
+    public FamilyEventDialogDto Content { get; set; } = default!;
+
+
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; }
+
+    private void OnSelectedEventTypeChanged(string newValue)
+    {
+        if (Enum.TryParse<FamilieEventType>(newValue, out var eventType))
+        {
+            Content.FamilyEvent.Type = eventType;
+        }
+    }
+
+    private void OnDateChanged(DateTime newDate)
+    {
+        Content.FamilyEvent.Date = newDate;
+        UpdateEndDate();
+    }
+
+    private void UpdateEndDate()
+    {
+        if (Content.FamilyEvent.Type != FamilieEventType.Ferie)
+        {
+            Content.FamilyEvent.EndDate = Content.FamilyEvent.Date;
+        }
+    }
+
+    private async Task Save()
+    {
+        await Dialog.CloseAsync(DialogResult.Ok(Content.FamilyEvent));
+    }
+
+    private async Task Delete()
+    {
+       
+
+        var dialog = await DialogService.ShowConfirmationAsync("Vil du slette denne event?", "Sletteforespørsel");
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await Dialog.CloseAsync(DialogResult.Ok("delete"));
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await Dialog.CloseAsync(DialogResult.Cancel());
+    }
+}

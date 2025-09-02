@@ -1,0 +1,30 @@
+﻿.birthday-card {
+    background: #FFFACD; /* Light yellow */
+    border: 2px solid #FFD700; /* Gold border */
+    width: 100%;
+    height: 60px; /* Single-line height */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.event-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Aligns title on the left, lottie-player on the right */
+    width: 100%; /* Ensure it takes the full width of the card */
+    gap: 10px;
+}
+
+.title {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.lottie-placeholder {
+    font-size: 0.9em;
+    font-style: italic;
+    color: var(--neutral-foreground-hint);
+}

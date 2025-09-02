@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen.Blazor
+
+<CascadingAuthenticationState>
+	<Router AppAssembly="typeof(Program).Assembly" OnNavigateAsync="HandleNavigation">
+		<Found Context="routeData">
+			<RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+			@* <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@
+		</Found>
+		<NotFound>
+			<PageTitle>Not Found</PageTitle>
+			<LayoutView Layout="typeof(Layout.NotLoggedInLayout)">
+				<p>Beklager, her har familien gått seg vill.</p>
+			</LayoutView>
+		</NotFound>
+	</Router>
+</CascadingAuthenticationState>
+
+<FluentDialogProvider />
+<FluentMenuProvider />
+<FluentTooltipProvider />
+<FluentToastProvider />
+<RadzenComponents @rendermode="InteractiveAuto" />
+
+@code {
+	[Inject] NavigationManager NavigationManager { get; set; } = default!;
+	[Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+	private async Task HandleNavigation(NavigationContext context)
+	{
+		if (context.Path == "")
+		{
+
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			var user = authState.User;
+
+			// Redirect based on authentication state
+			if (user.Identity?.IsAuthenticated == true )
+			{
+				NavigationManager.NavigateTo("/home", true);
+			}
+		}
+	}
+}

@@ -1,0 +1,18 @@
+﻿.empty-todo-center {
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks elements vertically */
+    align-items: center; /* Centers child elements horizontally */
+    justify-content: center; /* Centers child elements vertically (if height is limited) */
+    text-align: center; /* Centers the text inside the <p> element */
+    margin: 20px 0; /* Adjust this spacing to your liking */
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    height: calc(100% - 20px); 
+    width:100%;
+    text-align: center;
+}

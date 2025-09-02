@@ -1,0 +1,46 @@
+﻿@using FamiliyApplication.AspireApp.Web.Components.Shared
+@using Microsoft.FluentUI.AspNetCore.Components
+@implements IDialogContentComponent<BlackBoardPerformTodoModalDto>
+
+
+<FluentDialogHeader ShowDismiss="true">
+	<FluentStack VerticalAlignment="VerticalAlignment.Center">
+		<LottiePlayer Src="lottie/lottieblackboard.json"
+					  Width="64px"
+					  Height="48px"
+					  Style="border-radius: 50%"
+					  Autoplay="true"
+					  Speed="1" />
+
+		<FluentLabel Typo="Typography.PaneHeader">
+			Utfør oppgave
+		</FluentLabel>
+	</FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+	<p>Du skal til å utføre en oppgaven, når du trykker her blir det sendt varsel om at oppgaven er klar for godkjenning. Du finner den igjen i lommeboken din.</p>
+	@*  <p>Skriv gjerne en kommentar under om det er noe spesielt.</p>
+    <FluentTextArea Spellcheck="false"  Style="margin:8px; width:100%"/> *@
+	<FluentButton Style="margin:8px; width:100%" Appearance="Appearance.Accent" OnClick="@SaveChanges">Yess</FluentButton>
+
+
+</FluentDialogBody>
+<FluentDialogFooter>
+	<div></div>
+</FluentDialogFooter>
+
+@code {
+	[Parameter] public BlackBoardPerformTodoModalDto Content { get; set; } = default!;
+	[CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+	private async void SaveChanges()
+	{
+		await Dialog.CloseAsync(Content);
+	}
+
+	private async void Cancel()
+	{
+		await Dialog.CancelAsync();
+	}
+}

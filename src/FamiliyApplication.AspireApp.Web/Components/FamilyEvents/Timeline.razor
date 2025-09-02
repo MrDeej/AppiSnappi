@@ -1,0 +1,89 @@
+﻿@* Pages/Timeline.razor *@
+@page "/timeline"
+@using System.Collections.ObjectModel
+@using FamiliyApplication.AspireApp.Web.Components.FamilyEvents
+@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using FamiliyApplication.AspireApp.Web.Sessions
+
+@inject FamilyEventService FamilyEventService
+@inject SessionManager SessionManager
+@inject GlobalVm GlobalVm
+@inject FamilyDtoDataService FamilyDtoDataService
+
+<FamilyTimeline Events="@FamilyEventService.ObsColl"
+                Title="Familie kalender"
+                AllowAdd="true"
+                AllowEdit="true"
+                AllowDelete="@(MyUser?.UserType == UserType.Parent)"
+                AddEventCallback="@AddEvent"
+                EditEventCallback="@EditEvent"
+                DeleteEventCallback="@RemoveEvent" />
+
+@code {
+    private UserDto? MyUser;
+    private FamilyDto? FamilyDto;
+
+    protected override void OnInitialized()
+    {
+        MyUser = SessionManager.GetMyUserDto();
+        if (MyUser?.FamilyId == null)
+            return;
+        FamilyDto = GlobalVm.FamilyDtos.FirstOrDefault(a => a.Id == MyUser.FamilyId);
+    }
+
+    private async Task AddEvent(FamilyEvent newEvent)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(FamilyDto);
+            ArgumentNullException.ThrowIfNull(MyUser);
+
+            using var task = GlobalVm.AddTask("Lagrer family event");
+            var token = task.GetToken();
+
+            await FamilyDtoDataService.AddUpdateFamilyEvent(newEvent, FamilyDto, MyUser, token);
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+    }
+
+    private async Task EditEvent(FamilyEvent updatedEvent)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(FamilyDto);
+            ArgumentNullException.ThrowIfNull(MyUser);
+
+            using var task = GlobalVm.AddTask("Lagrer family event");
+            var token = task.GetToken();
+
+            await FamilyDtoDataService.AddUpdateFamilyEvent(updatedEvent, FamilyDto, MyUser, token);
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+    }
+
+    private async Task RemoveEvent(FamilyEvent familyEvent)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(FamilyDto);
+            ArgumentNullException.ThrowIfNull(MyUser);
+
+            using var task = GlobalVm.AddTask("Lagrer family event");
+            var token = task.GetToken();
+
+            await FamilyDtoDataService.DeleteFamilyEvent(familyEvent, FamilyDto, MyUser, token);
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+    }
+}

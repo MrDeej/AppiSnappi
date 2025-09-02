@@ -1,0 +1,133 @@
+﻿.notification-panel {
+    width: 100%;
+    padding: 4px;
+    background: transparent;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+}
+
+.notification-list {
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.notification-card {
+    padding: 16px;
+    border-radius: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: flex-start; /* Align items at the top */
+    border: 2px solid transparent;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+    .notification-card.unread {
+        border: 2px solid #ff9800;
+        transform: scale(1.01);
+    }
+
+    .notification-card.read {
+        border: 2px solid #a5d6a7;
+    }
+
+    .notification-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 12px; /* Reduced gap for a tighter layout like X */
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    margin-top: 8px; /* Align icon with the top of the text */
+}
+
+.notification-user {
+    flex-shrink: 0;
+}
+
+.notification-details {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-size: 16px; /* Slightly smaller than description for hierarchy */
+    margin: 0;
+    line-height: 1.3;
+}
+
+    .notification-title.unread {
+        font-weight: bold;
+        color: #e91e63;
+    }
+
+    .notification-title.read {
+        font-weight: normal;
+        color: #333;
+    }
+
+.notification-description {
+    font-size: 18px;
+    margin: 4px 0 0;
+    line-height: 1.4;
+    color: #333; /* Match app's primary text color */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.notification-timeago {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.no-notifications {
+    background: #fff;
+    border-radius: 20px;
+    text-align: center;
+    padding: 24px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-notifications-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+    .no-notifications-content p {
+        font-size: 18px;
+        color: #333;
+    }
+
+/* Custom scrollbar */
+.notification-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+    background: #e0f2e9;
+    border-radius: 5px;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: #ff9800;
+    border-radius: 5px;
+}
+
+    .notification-list::-webkit-scrollbar-thumb:hover {
+        background: #f57c00;
+    }

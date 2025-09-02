@@ -1,0 +1,64 @@
+﻿@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using FamiliyApplication.AspireApp.Web.Sessions
+@using Microsoft.FluentUI.AspNetCore.Components
+@using System.ComponentModel
+@inject SessionManager SessionManager
+@inject NotificationManager NotificationManager
+@inject GlobalVm GlobalVm
+@inject IDialogService DialogService
+@inject UserDtoDataService UserDtoDataService
+@implements IDisposable
+
+@if (MyUser != null)
+{
+    @if (MyUser.NotificationSubscription == null || MyUser.DisableNotifications == true)
+    {
+        <FluentMessageBar Title="Skru på notifikasjoner" Intent="@MessageIntent.Custom" Icon="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size20.Alert())" IconColor="Color.Neutral">
+            <FluentButton OnClick="@TurnOnNotifications">Trykk her for å skru på varsler for familieappen</FluentButton>
+        </FluentMessageBar>
+    }
+}
+
+@code {
+    private UserDto? MyUser;
+
+    protected override void OnInitialized()
+    {
+        MyUser = SessionManager.GetMyUserDto();
+        MyUser.PropertyChanged += PropertyChanged;
+    }
+
+    public void Dispose()
+    {
+        if (MyUser != null)
+            MyUser.PropertyChanged -= PropertyChanged;
+    }
+
+    private async void PropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(MyUser.NotificationSubscription))
+            await this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+
+
+    private async Task TurnOnNotifications()
+    {
+        try
+        {
+            var permissions = await NotificationManager.CheckNotificationPermissionAsync();
+            if(permissions == "denied")
+            {
+                DialogService.ShowError("Nettleseren har blokkert oss fra å vise varsler, du må endre tillatelser inne i denne først");
+                return;
+            }
+
+            await NotificationManager.RequestNotificationSubscription(UserDtoDataService);
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+    }
+}

@@ -1,0 +1,251 @@
+﻿
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+/* Base styles for the modal that apply to all viewport sizes */
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: auto; /* Full width on mobile */
+    max-width: 1200px; /* Maximum width for larger screens */
+    margin: auto; /* Margin around the modal for smaller screens */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Adjustments specifically for mobile screens */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: auto; /* Remove margin for small screens */
+        width: 90%; /* Full width on smaller screens */
+        height: auto; /* Auto height for small screens */
+        max-height: 90%; /* Avoid touching the viewport edges */
+        overflow-y: auto; /* Enable scrolling if content is taller than the modal */
+    }
+
+    .property-field label {
+        display: none; /* Hide label on small screens */
+    }
+
+    .modal-content {
+        margin: 10px; /* Give some space around the modal */
+    }
+
+    .modal-header h2,
+    .modal-body,
+    .modal-footer {
+        padding: 10px; /* Reduce padding for small screens */
+    }
+
+    .property-field {
+        display: block; /* Default to block layout for mobile */
+        margin-bottom: 10px; /* Reduce bottom margin */
+    }
+
+        .property-field label,
+        /* Ensure inputs use the full width available */
+        .property-field input,
+        .property-field select {
+            width: 100%;
+        }
+
+            .property-field input[type="date"],
+            .property-field select {
+                padding: 12px; /* Sufficient padding for easy interaction */
+                font-size: 16px; /* Readable text size */
+            }
+
+    .tab-buttons button {
+        padding: 10px; /* Sufficient padding */
+        font-size: 16px; /* Readable text size */
+    }
+
+    .modal-footer button {
+        width: 100%; /* Full width button for easy tapping */
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+    }
+}
+
+/* Additional styles if needed for larger screens */
+@media (min-width: 769px) {
+    /* Styles for larger screens can be added here if necessary */
+}
+
+
+/* Even larger screens */
+@media (min-width: 1024px) {
+    .modal-content {
+        width: 50%; /* Further increase the modal width on large screens */
+        max-width: 1000px; /* Set another threshold for the max width */
+    }
+}
+
+
+.modal-header,
+.modal-footer {
+    padding: 20px; /* Increased padding */
+    background-color: #f2f2f2; /* Softer shade for the header and footer */
+    color: #333; /* Dark gray for contrast */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 20px; /* Consistent padding */
+    background-color: #fff; /* White background for the body */
+    color: #333; /* Dark gray for body text for readability */
+}
+
+.close {
+    color: #333; /* Dark gray to contrast with the lighter header */
+    font-size: 32px; /* Larger size for easier touch */
+    cursor: pointer;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #555; /* Slightly darker on hover/focus for feedback */
+    }
+
+button {
+    padding: 15px 30px; /* Larger padding for touch-friendliness */
+    font-size: 16px; /* Readable font size */
+    margin: 10px; /* Spacing out buttons */
+    border: none; /* Removing border for a cleaner look */
+    border-radius: 4px; /* Rounded corners for buttons */
+    background-color: #5cb85c; /* Keeping a shade of green for actions */
+    color: white; /* White text for contrast */
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #4cae4c; /* Darker green on hover for feedback */
+    }
+
+    /* Styles for the disabled button */
+    button:disabled {
+        background-color: #9db9a0; /* Dimmed green background for disabled state */
+        color: #dcdcdc; /* Light grey color for text */
+        cursor: not-allowed; /* Cursor to indicate the button is not clickable */
+        pointer-events: none; /* Prevents click events on the disabled button */
+    }
+
+label {
+    display: block; /* Making labels block for better structure */
+    margin-bottom: 5px; /* Spacing below labels */
+    font-weight: bold; /* Making text bold for better visibility */
+}
+
+input,
+select {
+    width: 100%; /* Full width inputs */
+    padding: 10px; /* Padding inside inputs */
+    margin-bottom: 20px; /* Spacing after inputs */
+    border: 1px solid #ccc; /* Subtle border for inputs */
+    border-radius: 4px; /* Rounded corners for inputs */
+}
+
+/* Tab buttons container styling */
+.tab-buttons {
+    display: flex;
+    background-color: #f2f2f2; /* Neutral background for tabs container */
+    border-radius: 8px 8px 0 0; /* Rounded corners on the top */
+}
+
+.modal-body > .tab-buttons > button {
+    flex: 1; /* Equal width for buttons */
+    padding: 10px 20px; /* Spacing inside tabs */
+    margin: 0; /* Remove margin to make buttons touch */
+    border: none; /* Remove individual borders */
+    background-color: #f2f2f2; /* Neutral background for tabs */
+    color: #333; /* Dark text for contrast */
+    outline: none; /* Remove outline to avoid boxy look on focus */
+    border-radius: 8px 8px 0 0; /* Rounded corners on the top */
+}
+
+    .modal-body > .tab-buttons > button.active {
+        background-color: #fff; /* White background for active tab */
+        color: #5cb85c; /* Highlight color for the active tab text */
+        border-bottom: 2px solid #fff; /* White border for active tab */
+    }
+
+/* Content styling under tabs */
+.tab-content {
+    border: 1px solid #ccc; /* Border around the content */
+    border-top: none; /* Remove top border */
+    padding: 20px; /* Padding inside content area */
+    border-radius: 0 0 8px 8px; /* Rounded corners on the bottom */
+    background-color: #fff; /* White background for content */
+}
+
+/* Style adjustments for property fields */
+.property-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Increases vertical spacing between fields */
+    margin-top: 20px; /* Additional space from the tabs */
+}
+
+.property-field {
+    display: flex;
+    align-items: center;
+}
+
+    .property-field label {
+        flex: 0 0 120px; /* Fixed width for labels */
+        margin-right: 10px; /* Spacing between label and field */
+    }
+
+    .property-field span,
+    .property-field input,
+    .property-field select {
+        flex: 1; /* Fields take up the remaining space */
+    }
+
+/* Adjusting tab content to align with active tab visually */
+.tab-content {
+    border-top: 3px solid #5cb85c; /* Highlights the top border to match active tab */
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    padding: 20px;
+}
+
+
+/* Style adjustments for FluentDatePicker */
+.ms-DatePicker {
+    width: 100%; /* Make it full-width */
+    padding: 10px; /* Add padding inside the FluentDatePicker */
+}
+
+.ms-DatePicker-callout {
+    min-width: auto; /* Remove the minimum width to allow it to size based on content */
+}
+
+.ms-DatePicker-input {
+    padding: 6px 12px; /* Adjust internal padding for the input field */
+    font-size: 16px; /* Set font size for better readability */
+    border: 1px solid #ccc; /* Add a subtle border for consistency */
+    border-radius: 4px; /* Apply rounded corners */
+    width: 100%; /* Make the input full-width */
+}
+
+.ms-DatePicker-datepicker {
+    margin-top: 10px; /* Add some margin to separate it from other elements */
+}

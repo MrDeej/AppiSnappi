@@ -1,0 +1,326 @@
+﻿@using Eiriklb.Utils
+@using Fa.Client.Blazorwasm.Components.Blocks
+@using FamiliyApplication.AspireApp.Web.Components.Shared
+@using FamiliyApplication.AspireApp.Web.Components.Users
+@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using FamiliyApplication.AspireApp.Web.Sessions
+@using Microsoft.FluentUI.AspNetCore.Components
+@using System.ComponentModel
+@inject GlobalVm GlobalVm
+@implements IDisposable
+@inject IDialogService DialogService
+@inject SessionManager SessionManager
+
+
+
+<div class="todo-item" @key="Todo.Id">
+	<div class="todo-content">
+		<div class="title-content">
+			@if (Todo.ScheduledTodoId != null)
+			{
+				<LottiePlayer Src="/lottie/lottieschedule.json" class="todo-icon"
+							  Style="border-radius: 50%"
+							  Autoplay="true"
+							  Speed="1" />
+
+			}
+			@if (Todo.PayAmount.HasValue && Todo.PayAmount > 0)
+			{
+				<img src="icons/familytodoitem-paying.png" alt="Paying Todo Item" class="todo-icon" />
+			}
+			else
+			{
+				<img src="icons/familytodoitem-normal.png" alt="Normal Todo Item" class="todo-icon" />
+			}
+			@if (Todo.UserIdBelongsTo != null)
+			{
+				<div class="user-visualizer" @onclick="RemoveUser">
+					<UserPictureFrame User="@(GlobalVm.UserDtos.SingleOrDefault(a=>a.Id == Todo.UserIdBelongsTo))" ShowInitials="true" />
+				</div>
+			}
+			<span class="todo-title" style="@GetStrikethroughStyle(Todo.IsDone)">@Todo.Tittel</span>
+		</div>
+		@if (Todo.PayAmount.HasValue && Todo.PayAmount > 0)
+		{
+			<div class="money-visualizer">
+				<MoneyVisualizer Amount="@Todo.PayAmount.Value" />
+			</div>
+		}
+	</div>
+
+	<div class="todo-actions">
+		@if (ShowTodoActions)
+		{
+			@if (Todo.UserIdBelongsTo == null || Todo.UserIdBelongsTo == SessionManager.GetMyUserDto().Id)
+			{
+				<button class="btn-done" @onclick="TodoFlowButtonClick">
+					@GetTodoFlowButtonText(Todo)
+				</button>
+			}
+		}
+		@if (SessionManager.GetMyUserDto().UserType == UserType.Parent)
+		{
+			<FluentButton Id="@($"btnEllipsisMenu-{Todo.Id}")" @onclick="() => IsEllipsisMenuOpen = !IsEllipsisMenuOpen" IconStart="(new Icons.Regular.Size16.MoreVertical())" />
+			<FluentMenu Anchor="@($"btnEllipsisMenu-{Todo.Id}")" @bind-Open="IsEllipsisMenuOpen" VerticalThreshold="170">
+				@if (Todo.IsDone && Todo.PayAmount > 0 && Todo.UserIdBelongsTo != null)
+				{
+					<FluentMenuItem OnClick="@Approve">
+						Godkjenn
+						<span slot="start">
+							<FluentIcon Value="@(new Icons.Filled.Size12.Checkmark())" Color="@Color.Accent" />
+						</span>
+					</FluentMenuItem>
+				}
+
+				<FluentMenuItem OnClick="@Edit">
+					Rediger
+					<span slot="start">
+						<FluentIcon Value="@(new Icons.Filled.Size12.Edit())" Color="@Color.Accent" />
+					</span>
+				</FluentMenuItem>
+				<FluentMenuItem OnClick="Delete">
+					Slett
+					<span slot="start">
+						<FluentIcon Value="@(new Icons.Filled.Size12.Delete())" Color="@Color.Accent" />
+					</span>
+				</FluentMenuItem>
+
+			</FluentMenu>
+		}
+	</div>
+</div>
+
+@code {
+
+	private bool IsEllipsisMenuOpen { get; set; }
+
+	[Parameter] public required FamilyTodoDto Todo { get; set; }
+	[Parameter] public bool ShowTodoActions { get; set; } = true;
+	[Parameter] public EventCallback<FamilyTodoDto> OnTodoApproveRequest { get; set; }
+	[Parameter] public EventCallback<FamilyTodoDto> OnTodoDeleteRequest { get; set; }
+	[Parameter] public EventCallback<FamilyTodoDto> OnTodoAddOrUpdateRequest { get; set; }
+
+	protected override void OnInitialized()
+	{
+		try
+		{
+			ArgumentNullException.ThrowIfNull(Todo);
+
+			Todo.PropertyChanged += TodoPropertyChanged;
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+
+	private async Task Approve()
+	{
+		try
+		{
+			var dialog = await DialogService.ShowConfirmationAsync("Vil du godkjenne denne oppgaven?", "Yup", "Nope", "Du bestemmer");
+			var result = await dialog.Result;
+			if (result.Cancelled)
+				return;
+
+			using var task = GlobalVm.AddTask("Godkjenner..");
+			var token = task.GetToken();
+
+			await OnTodoApproveRequest.InvokeAsync(Todo);
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+	private async Task Edit()
+	{
+		try
+		{
+			DialogParameters parameters = new()
+				{
+					Title = $"Rediger todo",
+					PrimaryAction = "Lagre",
+					PrimaryActionEnabled = false,
+					SecondaryAction = "Avbryt",
+					Width = "400px",
+					TrapFocus = true,
+					Modal = true,
+					PreventScroll = true
+				};
+
+			var lc = new LiveCloneObject<FamilyTodoDto>(Todo);
+
+			var dto = new TodoItemEditModal2Dto()
+				{
+					Todo = lc.TempObject,
+					IsNew = false,
+
+				};
+
+			var dialog = await DialogService.ShowDialogAsync<TodoItemEditModal2>(dto, parameters);
+			var result = await dialog.Result;
+
+
+			if (result is not { Data: TodoItemEditModal2Dto res, Cancelled: false })
+				return;
+
+
+			using var task = GlobalVm.AddTask("Godkjenner..");
+			var token = task.GetToken();
+
+
+			await OnTodoAddOrUpdateRequest.InvokeAsync(res.Todo);
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+	private async Task Delete()
+	{
+		try
+		{
+			var dialog = await DialogService.ShowConfirmationAsync("Vil du slette denne oppgaven?", "Yup", "Nope", "OBS, du sletter oppgaven");
+			var result = await dialog.Result;
+			if (result.Cancelled)
+				return;
+
+			using var task = GlobalVm.AddTask("Sletter..");
+			var token = task.GetToken();
+
+
+			await OnTodoDeleteRequest.InvokeAsync(Todo);
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+	private string GetStrikethroughStyle(bool isDone) => isDone ? "text-decoration: line-through;" : "";
+
+	private string GetTodoFlowButtonText(FamilyTodoDto todo)
+	{
+		if (todo.UserIdBelongsTo != null)
+		{
+			if (todo.IsDone)
+				return "Angre";
+			else
+			{
+				if (todo.PayAmount != null)
+					return "Klar til godkjenning";
+				else
+					return "Utfør";
+			}
+		}
+
+		if (todo.UserIdBelongsTo == null)
+		{
+			return "Start";
+		}
+
+		return "error";
+	}
+
+	private async void TodoFlowButtonClick()
+	{
+		using var lcDto = new LiveCloneObject<FamilyTodoDto>(Todo);
+		var tempObject = lcDto.TempObject;
+
+		if (lcDto.TempObject.UserIdBelongsTo == null)
+		{
+			tempObject.UserIdBelongsTo = SessionManager.GetMyUserDto().Id;
+		}
+		else
+		{
+			tempObject.IsDone = !tempObject.IsDone;
+		}
+
+		await SaveFamilyTodo(tempObject);
+	}
+
+	private async Task SaveFamilyTodo(FamilyTodoDto tempObject)
+	{
+		try
+		{
+			using var task = GlobalVm.AddTask("Lagrer");
+			var token = task.GetToken();
+
+
+			await OnTodoAddOrUpdateRequest.InvokeAsync(tempObject);
+
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+
+	private async void TodoPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(FamilyTodoDto.IsDone)
+		or nameof(FamilyTodoDto.Tittel)
+		or nameof(FamilyTodoDto.Status)
+		or nameof(FamilyTodoDto.PayAmount)
+			/* or nameof(FamilyTodoDto.UserBelongsTo) */)
+			await this.InvokeAsync(() => StateHasChanged());
+	}
+
+	public void Dispose()
+	{
+		try
+		{
+			ArgumentNullException.ThrowIfNull(Todo);
+
+			Todo.PropertyChanged -= TodoPropertyChanged;
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+
+	}
+
+
+
+	private async void RemoveUser()
+	{
+		try
+		{
+			var myUser = SessionManager.GetMyUserDto();
+			if (myUser.Id != Todo.UserIdBelongsTo && myUser.UserType != UserType.Parent)
+				return;
+
+			var dialog = await DialogService.ShowConfirmationAsync("Vil du fjerne deg fra oppgaven?", "Yup", "Nope", "Du bestemmer");
+			var result = await dialog.Result;
+			if (result.Cancelled)
+				return;
+
+
+			using var lcDto = new LiveCloneObject<FamilyTodoDto>(Todo);
+			var tempObject = lcDto.TempObject;
+			tempObject.UserIdBelongsTo = null;
+			tempObject.IsDone = false;
+
+			await SaveFamilyTodo(tempObject);
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+}
+
+

@@ -1,0 +1,98 @@
+﻿@namespace Fa.Client.Blazorwasm.Components.Blocks
+@using FamiliyApplication.AspireApp.Web.Components.Shared
+@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using System.ComponentModel
+@implements IDisposable
+@inject GlobalVm GlobalVm
+
+@if (User != null)
+{
+	<div class="@($"icon-container {GetUserTypeClass(User.UserType)}")">
+		<LottiePlayer Src="@User.LottieProfile"
+							  Style="border-radius: 50%"
+							  Autoplay="true"
+							  Width="24px"
+							  Height="24px"
+							  Speed="1" />
+
+		@if (ShowInitials)
+		{
+			<span class="textforname">@User.Initials</span>
+		}
+		@if (ShowFullName)
+		{
+			<span class="textforname">@User.Fullname</span>
+		}
+		@if (ShowFirstName)
+		{
+			<span class="textforname">@User.FirstName</span>
+		}
+		@if (ExtraText != null)
+		{
+			<span class="textforname">@ExtraText</span>
+		}
+	</div>
+}
+@code {
+	[Parameter] public UserDto? User { get; set; }
+	[Parameter] public bool ShowInitials { get; set; }
+	[Parameter] public bool ShowFullName { get; set; }
+	[Parameter] public string? ExtraText { get; set; }
+	[Parameter] public bool ShowFirstName { get; set; }
+
+	protected override void OnInitialized()
+	{
+		try
+		{
+			if (User != null)
+				User.PropertyChanged += UserPropertyChanged;
+		}
+		catch (Exception ex)
+		{
+			GlobalVm.AddException(ex);
+		}
+	}
+
+	private string GetUserTypeClass(UserType userType)
+	{
+		return userType == UserType.Parent ? "icon-forelder" : "icon-barn";
+	}
+
+	public void Dispose()
+	{
+		if (User != null)
+			User.PropertyChanged -= UserPropertyChanged;
+	}
+
+	private void UserPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(User.LottieProfile)
+		|| e.PropertyName == nameof(User.Initials))
+			this.InvokeAsync(() => StateHasChanged());
+	}
+}
+
+<style>
+	.icon-container {
+		display: flex;
+		align-items: center;
+		border: 1px solid #ccc;
+		padding: 4px;
+		border-radius: 8%;
+		font-size: 14px; /* Adjust as necessary for the text */
+	}
+
+	.icon-forelder {
+		background-color: #ffe5d9; /* soft orange */
+	}
+
+	.icon-barn {
+		background-color: #d0e8ff; /* light blue */
+	}
+
+	.textforname {
+		margin-left: 4px; /* Adjust spacing as necessary */
+		color: black;
+	}
+</style>

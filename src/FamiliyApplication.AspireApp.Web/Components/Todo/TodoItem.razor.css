@@ -1,0 +1,148 @@
+﻿/* General Styles for .todo-item */
+.todo-item {
+    display: flex;
+    flex-direction: column; /* Stack children vertically by default */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+    background-color: #f9f9f9;
+}
+
+/* Styles for .todo-content */
+.todo-content {
+    display: flex;
+    flex-direction: column; /* Stack children vertically by default on small screens */
+}
+
+.title-content {
+    display: flex;
+    align-items: center;
+    /* Additional styles as required */
+}
+
+.money-visualizer {
+    /* Centering for small screens; will be in-line on wide screens */
+    text-align: center;
+}
+
+.todo-actions {
+    /* Right alignment for small screens */
+    text-align: right;
+    margin-left:auto;
+    
+}
+
+/* Styles for Wide Screens */
+@media (min-width: 769px) {
+    .todo-item {
+        flex-direction: row; /* Align children horizontally */
+        justify-content: space-between; /* Space out the child elements */
+    }
+
+    .todo-content {
+        display: flex;
+        flex-direction:row;
+        align-items: center;
+        flex-grow: 1; /* Allows it to take up available space */
+    }
+
+    .title-content {
+        /* Occupies required space */
+    }
+
+    .money-visualizer {
+        margin-left: auto;
+    }
+
+    .todo-actions {
+        margin-left:12px;
+        /* No flex-grow to take up only the required space */
+    }
+}
+
+
+/* Remove any unused styles or those that conflict with these settings */
+
+
+/* Remove any unused styles or those that conflict with these settings */
+
+
+/* Icon style with added margin */
+.todo-icon {
+    max-width: 32px; /* Adjust the size to match your design */
+    max-height: 32px; /* Adjust the size to match your design */
+    margin-right: 10px; /* Right margin for spacing between icon and title */
+    margin-left: 10px; /* Left margin for spacing between icon and the left edge of the container */
+    vertical-align: middle; /* Aligns the icon vertically with the text */
+}
+
+/* Icon and Title will be in their own div container now for better control */
+.icon-title {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 10px;
+}
+
+
+.todo-title {
+    margin: 4px;
+    font-weight: bold;  
+    /*text-transform: uppercase;*/ /* This will transform the text to uppercase */
+}
+.user-visualizer {
+    margin: 4px;
+}
+
+/* Styles for actions */
+.todo-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; /* Prevents shrinking */
+    gap: 5px;
+    /* No change in positioning, they stay on the right */
+}
+
+.btn-ellipsis {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+
+
+.btn-done {
+    background-color: #28a745; /* A green color indicating 'go' or 'start' */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 4px;
+}
+
+    .btn-done:hover {
+        background-color: #218838; /* A darker green on hover for depth */
+    }
+
+    .btn-done::after {
+        content: '▶ ';  
+        display: inline-block;
+        margin-left: 5px;
+    }
+

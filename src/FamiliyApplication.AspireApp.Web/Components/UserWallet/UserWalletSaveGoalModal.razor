@@ -1,0 +1,214 @@
+﻿@using FamiliyApplication.AspireApp.Web.Components.Shared
+@using FamiliyApplication.AspireApp.Web.CosmosDb.User
+@using FamiliyApplication.AspireApp.Web.Databuffer
+@using System.ComponentModel
+@using Eiriklb.Utils
+@inject IJSRuntime JSRuntime
+@inject GlobalVm GlobalVm
+@inject UserWalletSaveGoal NewUserWalletSaveGoal;
+@inject UserDtoDataService UserDtoDataService;
+
+@if (ShowModal && LcDto != null)
+{
+    <div class="save-goal-modal-overlay" @onmouseup="HandleMouseUp">
+        <div class="save-goal-modal-dialog" @onmousedown="HandleMouseDown" @onclick:stopPropagation>
+            <div class="save-goal-modal-content">
+                <h2 class="save-goal-modal-title">@AdaptedTitle</h2>
+                <div class="save-goal-lottie-animation">
+                    <LottiePlayer Src="lottie/lottiepiggybankblue.json"
+								  Style="border-radius: 50%"
+								  Autoplay="true"
+								  Width="100%"
+								  Speed="1" />
+                  
+                </div>
+                <div class="save-goal-form-container">
+                    <input class="form-control" type="text" placeholder="Tittel"
+                    @bind-value="LcDto.TempObject.ThingToSaveFor"
+                    @bind-value:event="oninput" />
+                    <textarea class="form-control" placeholder="Beskrivelse"
+                    @bind-value="LcDto.TempObject.Description"
+                    @bind-value:event="oninput"></textarea>
+                    <input class="form-control" type="number" placeholder=" "
+                    @bind-value="LcDto.TempObject.Amount"
+                    @bind-value:event="oninput"
+                    min="0" />
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               @bind="IsFinishedChecked"
+                               id="isFinishedCheckbox" />
+                        <label class="form-check-label" for="isFinishedCheckbox">Fullført</label>
+                    </div>
+                    <div class="save-goal-modal-buttons">
+                        <button class="btn btn-create" @onclick="Save_SaveGoal">@AdaptedSaveText</button>
+                        <button class="btn btn-cancel" @onclick="Cancel">Avbryt</button>
+                        @if (!_showConfirmDelete && !_isNew)
+                        {
+                            <button class="btn btn-delete" @onclick="ToggleConfirmDelete">Slett</button>
+                        }
+                        else if (!_isNew)
+                        {
+                            <div class="confirm-delete-section">
+                                @if (!ConfirmDeleteOk)
+                                {
+                                    <span class="confirm-delete-label">Du må skrive inn navnet på dette sparemål for å slette den:</span>
+                                }
+
+                                <input class="form-control confirm-delete-input"
+                                @bind-value="_confirmDeleteTitle"
+                                @bind-value:event="oninput" />
+
+                                @if (ConfirmDeleteOk)
+                                {
+                                    <button class="btn btn-confirm-delete" @onclick="DeleteSaveGoal">Bekreft Slett</button>
+                                }
+                                <button class="btn btn-cancel-delete" @onclick="ToggleConfirmDelete">Avbryt</button>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public bool ShowModal { get; set; }
+    private UserDto? User { get; set; }
+    private LiveCloneObject<UserWalletSaveGoal>? LcDto { get; set; }
+    private bool _isNew = false;
+
+    private string AdaptedTitle => (_isNew) ? "Nytt sparemål" : "Rediger sparemål";
+    private string AdaptedSaveText => (_isNew) ? "Opprett sparemål" : "Lagre sparemål";
+
+    private bool _showConfirmDelete = false;
+    private string _confirmDeleteTitle = "";
+    private bool ConfirmDeleteOk => _confirmDeleteTitle == LcDto?.TempObject.ThingToSaveFor;
+    private bool _isMouseDownOnModalContent;
+
+    private bool IsFinishedChecked
+    {
+        get => LcDto?.TempObject.FinishedAt.HasValue == true;
+        set
+        {
+            if (LcDto?.TempObject != null)
+            {
+                LcDto.TempObject.FinishedAt = value ? DateTime.Now : null;
+                StateHasChanged(); // Ensure UI updates if needed
+            }
+        }
+    }
+
+    private void ToggleConfirmDelete()
+    {
+        _showConfirmDelete = !_showConfirmDelete;
+    }
+
+    private async void DeleteSaveGoal()
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(LcDto);
+            ArgumentNullException.ThrowIfNull(User);
+
+            using var task = GlobalVm.AddTask("Sletter sparemål");
+            var token = task.GetToken();
+
+            await UserDtoDataService.DeleteSaveGoal(User.Id, LcDto.TempObject.Id, token);
+            _showConfirmDelete = false;
+            CloseModal();
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+
+
+    }
+
+    // You may want to update the CreateSaveGoal method to handle the update logic
+
+    private void HandleMouseDown(MouseEventArgs e)
+    {
+        // Set the flag to true when the mouse is pressed down on the modal content
+        _isMouseDownOnModalContent = true;
+    }
+
+    private void HandleMouseUp(MouseEventArgs e)
+    {
+        // Only close the modal if the mouse was not pressed down on the modal content
+        if (!_isMouseDownOnModalContent)
+        {
+            CloseModal();
+        }
+        // Reset the flag
+        _isMouseDownOnModalContent = false;
+    }
+
+    private async void Save_SaveGoal()
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(User);
+            ArgumentNullException.ThrowIfNull(LcDto);
+
+            using var task = GlobalVm.AddTask("Oppretter sparemål");
+            var token = task.GetToken();
+            await UserDtoDataService.AddUpdateSaveGoal(User.Id, LcDto.TempObject,token);
+
+            if (_isNew)
+            {
+                NewUserWalletSaveGoal.Description = "";
+                NewUserWalletSaveGoal.ThingToSaveFor = "";
+                NewUserWalletSaveGoal.Amount = 0;
+                NewUserWalletSaveGoal.FinishedAt = null;
+                NewUserWalletSaveGoal.Id = Guid.NewGuid().ToString();
+            }
+            CloseModal();
+
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+
+    }
+
+    private void Cancel()
+    {
+        CloseModal();
+    }
+
+    private void CloseModal()
+    {
+        if (_isNew && LcDto != null)
+        {
+            NewUserWalletSaveGoal.Description = LcDto.TempObject.Description;
+            NewUserWalletSaveGoal.ThingToSaveFor = LcDto.TempObject.ThingToSaveFor;
+            NewUserWalletSaveGoal.Amount = LcDto.TempObject.Amount;
+            NewUserWalletSaveGoal.FinishedAt = LcDto.TempObject.FinishedAt;
+        }
+
+
+        LcDto?.Dispose();
+
+        ShowModal = false;
+        StateHasChanged();
+    }
+
+    public void OpenModal(UserDto user, UserWalletSaveGoal? saveGoal = null)
+    {
+        User = user;
+        User.Wallet ??= new();
+        LcDto = new LiveCloneObject<UserWalletSaveGoal>(saveGoal ?? NewUserWalletSaveGoal);
+
+        _isNew = saveGoal == null;
+
+        ShowModal = true;
+        StateHasChanged();
+    }
+}
+

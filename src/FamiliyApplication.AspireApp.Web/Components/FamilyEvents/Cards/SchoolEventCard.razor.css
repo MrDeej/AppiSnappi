@@ -1,0 +1,42 @@
+﻿.school-event-card {
+    background: #F0F8FF; /* Alice blue */
+    border: 2px solid #4682B4; /* Steel blue border */
+    width: 100%;
+    min-height: 130px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.event-content {
+    display: flex;
+    justify-content: space-between; /* Aligns text-content on the left, lottie-player on the right */
+    align-items: center; /* Vertically centers the content */
+    width: 100%;
+    gap: 10px;
+}
+
+.text-content {
+    display: flex;
+    flex-direction: column; /* Stacks the text content vertically */
+}
+
+    .text-content h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.1em;
+    }
+
+    .text-content p {
+        margin: 0;
+        font-size: 0.9em;
+    }
+
+.extra-info {
+    font-style: italic;
+    font-size: 0.85em;
+    margin-top: 5px;
+    color: var(--neutral-foreground-hint);
+}
+
+lottie-player {
+    flex-shrink: 0; /* Prevent the lottie-player from shrinking */
+}

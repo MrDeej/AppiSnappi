@@ -1,0 +1,110 @@
+﻿/* Styles for currency container, notes, and coins */
+.currency-container {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 4px;
+}
+
+.plus-symbol {
+    display: inline-flex; /* Use inline-flex to keep flow as inline element */
+    align-items: center; /* Vertically align contents (the '+' symbol) to center */
+    justify-content: center; /* Horizontally center the '+' symbol */
+    font-size: 36px; /* Adjust font size as needed */
+    color: #333;
+    height: 48px; /* Should be similar to the height of currency notes and coins */
+    margin: 0 0px; /* Optional: Adjust margin to control spacing around the '+' symbol */
+}
+
+
+.currency-coin-gold {
+    width: 40px;
+    height: 40px;
+    background-color: #ffd700; /* Gold color */
+    border-radius: 50%; /* Circular coins */
+    color: #800000; /* Maroon */
+    border: 1px solid #b8860b; /* Thin, dark goldenrod border */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 4px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, opacity 0.3s; /* Animate the transform and opacity */
+}
+
+.currency-coin-silver {
+    width: 36px;
+    height: 36px;
+    background-color: #C0C0C0; /* Silver color */
+    border-radius: 50%; /* Circular coins */
+    color: #4B0082; /* Indigo - A playful contrasting color */
+    border: 1px solid #808080; /* Thin, dark gray border for a money-like look */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 4px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, opacity 0.3s; /* Animate the transform and opacity */
+}
+
+
+/* Base class with common properties */
+.currency-note {
+    width: 66px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    margin: 4px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Specific classes that inherit the base properties */
+.currency-note-500 {
+    background-color: #C6AB16;
+    color: #000000;
+}
+
+.currency-note-200 {
+    background-color: #339BB7;
+    color: #D3D3D3;
+}
+
+.currency-note-100 {
+    background-color: #D87650;
+    color: #333333;
+}
+
+.currency-note-1000 {
+    background-color: #894ED1;
+    color: #FFFF00;
+}
+
+    .currency-note.new, .currency-note-500.new, .currency-note-200.new, .currency-note-100.new, .currency-note-1000.new, .currency-coin.new {
+        transform: scale(1.2); /* Slightly larger size to indicate new */
+        opacity: 0; /* Start fully transparent */
+        animation: fadeInScaleDown 0.3s forwards; /* Animation to fade in and scale down to normal size */
+    }
+
+@keyframes fadeInScaleDown {
+    to {
+        transform: scale(1); /* Scale down to normal size */
+        opacity: 1; /* Fade to fully opaque */
+    }
+}
+/* Styles for plus signs */
+.currency-container span {
+    font-size: 24px;
+    color: #333;
+    padding: 0 10px;
+}

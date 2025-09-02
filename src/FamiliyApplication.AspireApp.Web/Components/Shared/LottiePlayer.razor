@@ -1,0 +1,255 @@
+﻿@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+@if (_loadFailed)
+{
+    <div style="width: @Width; height: @Height; background: #f00; color: white;">Failed to load animation</div>
+}
+else
+{
+    <lottie-player @ref="_lottiePlayer"
+                   src="@Src"
+                   background="transparent"
+                   @key="@Src"
+                   speed="@Speed"
+                   style="width: @Width; height: @Height; @Style"
+                   autoplay="@(Autoplay ? "autoplay" : null)"
+                   loop="@(Loop ? "loop" : null)"
+                   @onmouseenter="OnMouseEnter"
+                   @onmouseleave="OnMouseLeave">
+    </lottie-player>
+}
+
+@code {
+    private ElementReference _lottiePlayer;
+    private bool _isPlaying = false;
+    private bool _loadFailed = false;
+    private DotNetObjectReference<LottiePlayer>? _dotNetRef;
+
+    [Parameter]
+    public string Src { get; set; } = default!;
+
+    [Parameter]
+    public string Width { get; set; } = "48px";
+
+    [Parameter]
+    public string Height { get; set; } = "48px";
+
+    [Parameter]
+    public string Style { get; set; } = "";
+
+    [Parameter]
+    public bool Autoplay { get; set; } = false;
+
+    [Parameter]
+    public bool Loop { get; set; } = false;
+
+    [Parameter]
+    public float Speed { get; set; } = 1f;
+
+    [Parameter]
+    public int Direction { get; set; } = 1;
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await Task.Delay(100); // Consider replacing with a load event check if possible
+                _dotNetRef = DotNetObjectReference.Create(this);
+
+                var isInitialized = await JSRuntime.InvokeAsync<bool>(
+                    "lottiePlayerControl.isInitialized",
+                    _lottiePlayer
+                );
+                Console.WriteLine($"LottiePlayer initialized: {isInitialized}");
+
+                if (!isInitialized)
+                {
+                    _loadFailed = true;
+                    Console.WriteLine("LottiePlayer failed to initialize");
+                    return;
+                }
+
+                var isLoaded = await JSRuntime.InvokeAsync<bool>(
+                    "lottiePlayerControl.isLoaded",
+                    _lottiePlayer
+                );
+                Console.WriteLine($"Animation loaded: {isLoaded}");
+
+                if (!isLoaded)
+                {
+                    _loadFailed = true;
+                    Console.WriteLine("Animation failed to load");
+                    return;
+                }
+
+                await JSRuntime.InvokeVoidAsync(
+                    "lottiePlayerControl.setDirection",
+                    _lottiePlayer,
+                    Direction
+                );
+
+                // Force initial state
+                if (!Autoplay)
+                {
+                    await PauseAnimation(); // Ensure animation is paused if Autoplay is false
+                    _isPlaying = false;
+                }
+                else
+                {
+                    await PlayAnimation(); // Ensure animation is playing if Autoplay is true
+                    _isPlaying = true;
+                }
+
+                // Verify actual state
+                var isPaused = await JSRuntime.InvokeAsync<bool>(
+                    "lottiePlayerControl.isPaused",
+                    _lottiePlayer
+                );
+                _isPlaying = !isPaused;
+                Console.WriteLine($"Verified state: isPaused={isPaused}, _isPlaying={_isPlaying}");
+
+                await JSRuntime.InvokeVoidAsync(
+                    "lottiePlayerControl.addClickListener",
+                    _lottiePlayer,
+                    _dotNetRef,
+                    nameof(OnLottieClick)
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnAfterRenderAsync: {ex.Message}");
+                _loadFailed = true;
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnLottieClick()
+    {
+        try
+        {
+            var isPaused = await JSRuntime.InvokeAsync<bool>(
+                "lottiePlayerControl.isPaused",
+                _lottiePlayer
+            );
+            Console.WriteLine($"OnLottieClick called, isPaused={isPaused}, _isPlaying={_isPlaying}");
+
+            if (isPaused)
+            {
+                await PlayAnimation();
+                _isPlaying = true;
+            }
+            else
+            {
+                await PauseAnimation();
+                _isPlaying = false;
+            }
+            Console.WriteLine($"New state: isPaused={!_isPlaying}, _isPlaying={_isPlaying}");
+            await OnClick.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling animation: {ex.Message}");
+        }
+    }
+
+    private async Task OnMouseEnter()
+    {
+        try
+        {
+            Console.WriteLine($"OnMouseEnter called, _isPlaying={_isPlaying}");
+            var isPaused = await JSRuntime.InvokeAsync<bool>(
+                "lottiePlayerControl.isPaused",
+                _lottiePlayer
+            );
+            Console.WriteLine($"Actual state: isPaused={isPaused}");
+
+            if (isPaused)
+            {
+                await PlayAnimation();
+                _isPlaying = true;
+                Console.WriteLine("Mouse enter: Playing animation");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error on mouse enter: {ex.Message}");
+            _loadFailed = true;
+        }
+    }
+
+    private async Task OnMouseLeave()
+    {
+        try
+        {
+            Console.WriteLine($"OnMouseLeave called, _isPlaying={_isPlaying}, Autoplay={Autoplay}");
+            var isPaused = await JSRuntime.InvokeAsync<bool>(
+                "lottiePlayerControl.isPaused",
+                _lottiePlayer
+            );
+            Console.WriteLine($"Actual state: isPaused={isPaused}");
+
+            if (!isPaused && !Autoplay)
+            {
+                await PauseAnimation();
+                _isPlaying = false;
+                Console.WriteLine("Mouse leave: Pausing animation");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error on mouse leave: {ex.Message}");
+            _loadFailed = true;
+        }
+    }
+
+    private async Task PlayAnimation()
+    {
+        try
+        {
+            Console.WriteLine("Calling PlayAnimation");
+            await JSRuntime.InvokeVoidAsync(
+                "lottiePlayerControl.resetAndPlay",
+                _lottiePlayer
+            );
+            _isPlaying = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error playing animation: {ex.Message}");
+            _loadFailed = true;
+        }
+    }
+
+    private async Task PauseAnimation()
+    {
+        try
+        {
+            Console.WriteLine("Calling PauseAnimation");
+            await JSRuntime.InvokeVoidAsync(
+                "lottiePlayerControl.pause",
+                _lottiePlayer
+            );
+            _isPlaying = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error pausing animation: {ex.Message}");
+            _loadFailed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        _dotNetRef?.Dispose();
+    }
+}

@@ -1,0 +1,30 @@
+﻿@using FamiliyApplication.AspireApp.Web.Components.Shared
+@using FamiliyApplication.AspireApp.Web.CosmosDb.Family
+
+
+<div Class="vacation-card">
+	<div class="event-content">
+		<div class="text-content">
+			<h3>@Event.Title</h3>
+			@if (Event.Date.Date != Event.EndDate.Date)
+			{
+				<p><em>Duration: @($"{Event.Date:MMMM dd, yyyy} - {Event.EndDate:MMMM dd, yyyy}")</em></p>
+			}
+			<p><strong>@Event.Time</strong></p>
+			<BlazorServer.RichtextEditor.RichTextDisplay HtmlValue="@Event.Description" />
+			<p class="extra-info">🧳 Pakk sekkene deres</p>
+		</div>
+		<LottiePlayer Src="lottie/timeline/lottieVacation.json"
+					  Width="100px"
+					  Height="100px"
+					  Style="border-radius: 50%"
+					  Autoplay="true"
+					  Speed="1" />
+
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public FamilyEvent Event { get; set; }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "AppiSnappi (Familieappen)",
+  "short_name": "AppiSnappi",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#C8E6C9",
+  "theme_color": "#4CAF50",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/familyapplication-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icons/familyapplication-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

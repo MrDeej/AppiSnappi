@@ -1,0 +1,40 @@
+﻿
+@using Radzen.Blazor
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["FamiliyApplication.AspireApp.Web.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="icons/familyapplication-icon.png" />
+    <HeadOutlet />
+    <script src="lottie/lottie-player.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Poppins:wght@400;600&family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="manifest" href="/manifest.json">
+    <script src="js/CbsWindowHandlers.js?9999"></script>
+    <script src="js/pushNotifications.js"></script>
+    <script src="js/scroller.js"></script>
+    <script src="js/lottiePlayerControl.js"></script>
+    <script src="js/dialogBackground.js"></script>
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+    <FluentDesignTheme StorageName="theme" Mode="DesignThemeModes.Light" />
+    <RadzenTheme Theme="material" @rendermode="InteractiveServer" />
+</head>
+
+<body>
+    <Routes @rendermode="InteractiveServer" />
+    <script src="_framework/blazor.web.js"></script>
+    <FluentDesignTheme StorageName="theme" Mode="DesignThemeModes.Light" CustomColor="#4CAF50" />
+    <script>navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' });</script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+</body>
+
+</html>

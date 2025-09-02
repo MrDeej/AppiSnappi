@@ -1,0 +1,14 @@
+﻿@page "/signout-callback-oidc"
+@using Components.Layout
+@layout NotLoggedInLayout
+@attribute [AllowAnonymous]
+
+<h3>Du er nå logget av.</h3>
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        // You can add any cleanup or UI logic here if needed
+        return base.OnInitializedAsync();
+    }
+}

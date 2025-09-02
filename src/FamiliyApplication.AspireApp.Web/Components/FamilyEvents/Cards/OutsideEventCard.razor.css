@@ -1,0 +1,32 @@
+﻿.outside-event-card {
+    background: #FFF5EE; /* Seashell */
+    border: 2px solid #FFA500; /* Orange border */
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.event-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.event-content p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.extra-info {
+    font-style: italic;
+    font-size: 0.85em;
+    margin-top: 5px;
+    color: var(--neutral-foreground-hint);
+}
+
+.lottie-placeholder {
+    font-size: 0.9em;
+    font-style: italic;
+    margin-top: 5px;
+    color: var(--neutral-foreground-hint);
+}

@@ -1,0 +1,79 @@
+﻿.card {
+    display: flex;
+    flex-direction: column; /* Ensures header, body, and footer stack vertically */
+    justify-content: space-between; /* Pushes footer to the bottom */
+    border: 1px solid #ccc;
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden; /* Ensures content respects the border radius */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+    padding: 16px; /* Adds spacing inside the card */
+    background-color: #fff; /* Optional: Ensures consistent background color */
+    height: 100%; /* Ensures the card takes full height */
+}
+
+.card-body {
+    flex: 1; /* Allows the body to take up remaining space */
+}
+
+.card-forelder {
+    background-color: #ffe5d9; /* soft orange */
+}
+
+.card-barn {
+    background-color: #d0e8ff; /* light blue */
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #ccc;
+}
+
+.full-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: auto;
+    margin-left:4px
+}
+
+/*.edit-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+}*/
+
+.info-item {
+    margin: 8px 0;
+}
+
+    .info-item label {
+        font-weight: bold;
+        margin-right: 4px;
+    }
+
+.icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.icon-small {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.card-footer {
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+/*
+.lommebok-button, .oppgaver-button, .trening-button {
+    border: 2px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}*/

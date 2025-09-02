@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Databuffer\ScopedVm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Azure.Security.KeyVault" Version="9.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.8" />
+    <ProjectReference Include="..\FamiliyApplication.AspireApp.ServiceDefaults\FamiliyApplication.AspireApp.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\submodules\BlazorServer.RichtextEditor\src\BlazorServer.RichtextEditor\BlazorServer.RichtextEditor.csproj" />
+    <ProjectReference Include="..\submodules\BlazorServerCommon\scr\BlazorServerCommon\BlazorServerCommon.csproj" />
+    <ProjectReference Include="..\submodules\Eiriklb.Utils\src\Eiriklb.Utils\Eiriklb.Utils.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.8" />
+
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.12.1" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.12.1" />
+	  <PackageReference Include="Microsoft.Identity.Web" Version="3.14.0" />
+	  <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.14.0" />
+	  <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.14.0" />
+	  <PackageReference Include="WebPush" Version="1.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\lottie\lottiefamily3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="CosmosDb\Todo\**" />
+	  <Content Remove="CosmosDb\Todo\**" />
+	  <EmbeddedResource Remove="CosmosDb\Todo\**" />
+	  <None Remove="CosmosDb\Todo\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Remove="Components\UserWallet\UserWalletSaveGoalModal.razor" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Components\UserWallet\UserWalletSaveGoalModal.razor.css" />
+	</ItemGroup>
+
+</Project>

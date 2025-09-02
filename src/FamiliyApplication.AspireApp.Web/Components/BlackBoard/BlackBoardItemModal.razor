@@ -1,0 +1,120 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+@implements IDialogContentComponent<BlackBoardItemModalDto>
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Money())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Tittel
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveChanges">Lagre</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@Cancel">Avbryt</FluentButton>
+</FluentDialogFooter>
+
+<FluentDialogBody>
+    <FluentTextField Label="Tittel" @bind-Value="@Content.Dto.Todo.Tittel" />
+    <FluentNumberField Label="Valgfri Betaling" @bind-Value="@Content.Dto.Todo.PayAmount" />
+    <FluentTextArea Label="Beskrivelse" @bind-Value="@Content.Dto.Todo.Description" />
+    <FluentDivider />
+    @if (Content.ObsCollPerformed.Count > 0)
+    {
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentSpacer />
+                <FluentButton Disabled="@DeleteButtonDisabled" IconStart="@(new Icons.Regular.Size16.TableDeleteRow())" OnClick="@DeleteSelected"></FluentButton>
+                <FluentCheckbox @bind-CheckState="@SelectAllState" Label="Velg alle" ThreeState="true" Style="margin:4px;"
+                                ShowIndeterminate="false" />
+
+            </FluentStack>
+            <FluentListbox Items="@Content.ObsCollPerformed">
+                <OptionTemplate>
+                    <FluentStack Orientation="Orientation.Horizontal">
+                        <FluentLabel Typo="Typography.Subject">
+                            @context.Dto.UserName @((DateTime.UtcNow - context.Dto.CreatedAt).ToTimeAgo())
+                        </FluentLabel>
+                        <FluentSpacer />
+                        <FluentCheckbox @bind-Value:get="@context.IsSelected" @bind-Value:set="c => OnPerformedSelectedChange(context, c)" />
+                    </FluentStack>
+                </OptionTemplate>
+            </FluentListbox>
+    }
+
+</FluentDialogBody>
+
+@code {
+    [Parameter] public BlackBoardItemModalDto Content { get; set; } = default!;
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+    private readonly HashSet<BlackBoardItemModalDtoPerformed> _selectedPerformed = new();
+
+    private bool DeleteButtonDisabled
+    {
+        get => !_selectedPerformed.Any();
+    }
+    private bool? SelectAllState
+    {
+        get
+        {
+            return _selectedPerformed.SetEquals(Content.ObsCollPerformed.ToHashSet())
+                ? true
+                : _selectedPerformed.Count == 0
+                    ? false
+                    : null;
+        }
+        set
+        {
+            if (value is true)
+            {
+                _selectedPerformed.UnionWith(Content.ObsCollPerformed.ToHashSet());
+                foreach (var rad in Content.ObsCollPerformed)
+                    rad.IsSelected = true;
+            }
+            else if (value is false)
+            {
+                _selectedPerformed.Clear();
+
+                foreach (var rad in Content.ObsCollPerformed)
+                    rad.IsSelected = false;
+            }
+        }
+    }
+
+
+    private void DeleteSelected()
+    {
+        var remaining = Content.ObsCollPerformed.Where(a => !a.IsSelected);
+
+        Content.ObsCollPerformed = new(remaining);
+        _selectedPerformed.Clear();
+        
+    }
+
+    public string Tittel => Content.IsNew ? "Ny tavle oppgave" : "Rediger tavle oppgave";
+
+
+    private void OnPerformedSelectedChange(BlackBoardItemModalDtoPerformed context, bool isSelected)
+    {
+        context.IsSelected = isSelected;
+        if (isSelected)
+        {
+            _selectedPerformed.Add(context);
+        }
+        else
+        {
+            _selectedPerformed.Remove(context);
+        }
+    }
+
+
+    private async void SaveChanges()
+    {
+        await Dialog.CloseAsync(Content);
+    }
+
+    private async void Cancel()
+    {
+        await Dialog.CancelAsync();
+    }
+}

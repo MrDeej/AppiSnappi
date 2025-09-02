@@ -1,0 +1,54 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@implements IDialogContentComponent<UserWalletEditBalanceOnUserDto>
+
+
+
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Icons.Regular.Size24.Money())" />
+        <FluentLabel Typo="Typography.PaneHeader">
+            Rediger saldo for @Content.User.FirstName
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveChanges">Lagre</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@Cancel">Avbryt</FluentButton>
+</FluentDialogFooter>
+
+<FluentDialogBody>
+    <FluentNumberField @bind-Value="@Content.NewBalance" @bind-Value:after="Refresh" Label="Ny Saldo" />
+    <FluentTextArea @bind-Value="@Content.Reason" @bind-Value:after="Refresh" Label="Årsak til endring" />
+</FluentDialogBody>
+@code {
+    private EditContext _editContext = default!;
+
+    [Parameter] public UserWalletEditBalanceOnUserDto Content { get; set; } = default!;
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+    bool canSave => Content.NewBalance != Content.OldBalance && !string.IsNullOrWhiteSpace(Content.Reason);
+
+    private void Refresh()
+    {
+        this.StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(Content);
+    }
+
+    private async void SaveChanges()
+    {
+        if (_editContext.Validate())
+        {
+            await Dialog.CloseAsync(Content);
+        }
+    }
+
+    private async void Cancel()
+    {
+        await Dialog.CancelAsync();
+    }
+}
