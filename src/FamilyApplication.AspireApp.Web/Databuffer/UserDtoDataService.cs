@@ -140,7 +140,32 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
             token.ThrowIfCancellationRequested();
             userBelongsTo.TodosToApprove.Add(clonedFamilyTodo);
             var changed = await dbContext.SaveChangesAsync(token);
-            await notificationManager.WebPushNotify(listNotifications, token);
+            await notificationManager.WebPushNotify(listNotifications, this, token);
+        }
+
+        public async Task DisableEnableNotification(UserDto user, string lastChangeById)
+        {
+            try
+            {
+
+                using var task = vm.AddTask("Subscriber");
+                var token = task.GetToken();
+
+                var clone = new UserDto();
+                Eiriklb.Utils.ObjectSync.Instance.Update(clone, user);
+                clone.DisableNotifications = !clone.DisableNotifications;
+                if (clone.DisableNotifications == false)
+                    clone.NotificationSubscription = null;
+
+                clone.LastChangeBy = lastChangeById;
+                clone.LastChangedAt = DateTime.UtcNow;
+                await Save(clone, token);
+
+            }
+            catch (Exception ex)
+            {
+                vm.AddException(ex);
+            }
         }
 
         public async Task UpdateTodoToApprove(FamilyTodoDto clonedDto, string belongsToUserId, string performedById, CancellationToken token)
@@ -249,7 +274,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
 
             AddNotificationsToUsers(listNotification);
             await dbContext.SaveChangesAsync(token);
-            await notificationManager.WebPushNotify(listNotification, token);
+            await notificationManager.WebPushNotify(listNotification,this, token);
 
         }
 

@@ -40,7 +40,7 @@
     margin: 20px 0; /* Adjust this spacing to your liking */
 }
 
-.card {
+.userwalletpagecard {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 8px;
     margin: 1rem;

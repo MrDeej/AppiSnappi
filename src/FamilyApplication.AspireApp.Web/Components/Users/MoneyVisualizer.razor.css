@@ -7,6 +7,11 @@
     gap: 4px;
 }
 
+.test
+{
+    gap:43px;
+}
+
 .plus-symbol {
     display: inline-flex; /* Use inline-flex to keep flow as inline element */
     align-items: center; /* Vertically align contents (the '+' symbol) to center */

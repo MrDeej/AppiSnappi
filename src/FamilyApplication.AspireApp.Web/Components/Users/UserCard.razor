@@ -16,294 +16,294 @@
 @inject SessionManager SessionManager
 @inject NotificationManager NotificationManager
 
-<div class="@($"card {UserTypeClass}")">
-	<div class="card-header">
-		<LottiePlayer Src="@User.LottieProfile"
-					  Width="64px"
-					  Height="64px"
-					  Style="border-radius: 50%"
-					  Autoplay="true"
-					  Speed="1" />
+<div class="@($"usercard {UserTypeClass}")">
+    <div class="card-header">
+        <LottiePlayer Src="@User.LottieProfile"
+                      Width="64px"
+                      Height="64px"
+                      Style="border-radius: 50%"
+                      Autoplay="true"
+                      Speed="1" />
 
-		<span class="full-name">@User.Fullname</span>
-
-
-	</div>
-	<div class="card-body">
-		<div class="info-item">
-			<span title="@User.Id">ID: @(User.Id.Substring(0, 8))...</span>
-		</div>
-		<div class="info-item">
-			<label>Brukernavn:</label>
-			<span>@User?.Username</span>
-		</div>
-		<div class="info-item">
-			<label>Fødselsdag:</label>
-			<span>@User?.BirthDate - </span>
-			<span>@User?.CurrentAge</span>
-		</div>
-
-		<div class="info-item">
-			<MoneyVisualizer Amount="@User.Wallet.Amount" />
-		</div>
-		@if (User.TodosToApprove.Count > 1)
-		{
-
-			<div class="info-item">
-				<label>@User.TodosToApprove.Count oppgaver for godkjenning </label>
-			</div>
-		}
-		@if (User.TodosToApprove.Count == 1)
-		{
-
-			<div class="info-item">
-				<label>@User.TodosToApprove.Count oppgave for godkjenning </label>
-			</div>
-		}
-	</div>
-	<div class="card-footer">
-		<div class="info-item" style="width:100%">
-			<FluentLayout>
-				<FluentStack Orientation="Orientation.Horizontal">
-					@if (User.DisableNotifications == false && User.NotificationSubscription != null)
-					{
-						<LottiePlayer Src="lottie/lottienotificationenable.json"
-									  Width="30px"
-									  Height="30px"
-									  Style="border-radius: 50%"
-									  Autoplay="true"
-									  Speed="2.5f" />
-
-						<FluentTooltip Anchor="lottieplayerenablednotitications"
-									   Delay="300"
-									   MaxWidth="400px"
-									   Position="TooltipPosition.Bottom">Viser om brukeren har på notifications</FluentTooltip>
-					}
-
-					<FluentSpacer />
-					<FluentButton Id="@($"btnEllipsisMenu-{User.Id}")" @onclick="() => _isEllipsisMenuOpen = !_isEllipsisMenuOpen" IconStart="(new Icons.Regular.Size16.MoreVertical())" />
-					<FluentMenu Anchor="@($"btnEllipsisMenu-{User.Id}")" @bind-Open="_isEllipsisMenuOpen" VerticalThreshold="170">
-						<FluentMenuItem OnClick="@NavigateToUserWallet">
-							Vis lommebok
-							<span slot="start">
-								<FluentIcon Value="@(new Icons.Filled.Size16.Money())" Color="@Color.Accent" />
-							</span>
-						</FluentMenuItem>
-						<FluentMenuItem OnClick="@ShowEditModal">
-							Rediger profil
-							<span slot="start">
-								<FluentIcon Value="@(new Icons.Filled.Size20.PersonEdit())" Color="@Color.Accent" />
-							</span>
-						</FluentMenuItem>
-						<FluentDivider />
-						@if (User.NotificationSubscription != null)
-						{
-
-							<FluentMenuItem OnClick="@SendTestWebPushNotifkasjon">
-								Send test notification
-								<span slot="start">
-									<FluentIcon Value="@(new Icons.Filled.Size16.Send())" Color="@Color.Accent" />
-								</span>
-							</FluentMenuItem>
-
-						}
-						@if (User.DisableNotifications == true)
-						{
-							<FluentMenuItem OnClick="@DisableEnableNotification">
-								Skru på notifikasjoner
-								<span slot="start">
-									<FluentIcon Value="@(new Icons.Filled.Size12.AlertSnooze())" Color="@Color.Accent" />
-								</span>
-							</FluentMenuItem>
-						}
-						else
-						{
-							<FluentMenuItem OnClick="@DisableEnableNotification">
-								Skru av notifikasjoner
-								<span slot="start">
-									<FluentIcon Value="@(new Icons.Filled.Size12.Alert())" Color="@Color.Accent" />
-								</span>
-							</FluentMenuItem>
-						}
+        <span class="full-name">@User.Fullname</span>
 
 
-					</FluentMenu>
-				</FluentStack>
-			</FluentLayout>
-		</div>
-	</div>
+    </div>
+    <div class="card-body">
+        <div class="info-item">
+            <span title="@User.Id">ID: @(User.Id.Substring(0, 8))...</span>
+        </div>
+        <div class="info-item">
+            <label>Brukernavn:</label>
+            <span>@User?.Username</span>
+        </div>
+        <div class="info-item">
+            <label>Fødselsdag:</label>
+            <span>@User?.BirthDate - </span>
+            <span>@User?.CurrentAge</span>
+        </div>
+
+        <div class="info-item">
+            <MoneyVisualizer Amount="@User.Wallet.Amount" />
+        </div>
+        @if (User.TodosToApprove.Count > 1)
+        {
+
+            <div class="info-item">
+                <label>@User.TodosToApprove.Count oppgaver for godkjenning </label>
+            </div>
+        }
+        @if (User.TodosToApprove.Count == 1)
+        {
+
+            <div class="info-item">
+                <label>@User.TodosToApprove.Count oppgave for godkjenning </label>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="info-item" style="width:100%">
+            <FluentLayout>
+                <FluentStack Orientation="Orientation.Horizontal">
+                    @if (User.DisableNotifications == false && User.NotificationSubscription != null)
+                    {
+                        <LottiePlayer Src="lottie/lottienotificationenable.json"
+                                      Width="30px"
+                                      Height="30px"
+                                      Style="border-radius: 50%"
+                                      Autoplay="true"
+                                      Speed="2.5f" />
+
+                        <FluentTooltip Anchor="lottieplayerenablednotitications"
+                                       Delay="300"
+                                       MaxWidth="400px"
+                                       Position="TooltipPosition.Bottom">Viser om brukeren har på notifications</FluentTooltip>
+                    }
+
+                    <FluentSpacer />
+                    <FluentButton Id="@($"btnEllipsisMenu-{User.Id}")" @onclick="() => _isEllipsisMenuOpen = !_isEllipsisMenuOpen" IconStart="(new Icons.Regular.Size16.MoreVertical())" />
+                    <FluentMenu Anchor="@($"btnEllipsisMenu-{User.Id}")" @bind-Open="_isEllipsisMenuOpen" VerticalThreshold="170">
+                        <FluentMenuItem OnClick="@NavigateToUserWallet">
+                            Vis lommebok
+                            <span slot="start">
+                                <FluentIcon Value="@(new Icons.Filled.Size16.Money())" Color="@Color.Accent" />
+                            </span>
+                        </FluentMenuItem>
+                        <FluentMenuItem OnClick="@ShowEditModal">
+                            Rediger profil
+                            <span slot="start">
+                                <FluentIcon Value="@(new Icons.Filled.Size20.PersonEdit())" Color="@Color.Accent" />
+                            </span>
+                        </FluentMenuItem>
+                        <FluentDivider />
+                        @if (User.NotificationSubscription != null)
+                        {
+
+                            <FluentMenuItem OnClick="@SendTestWebPushNotifkasjon">
+                                Send test notification
+                                <span slot="start">
+                                    <FluentIcon Value="@(new Icons.Filled.Size16.Send())" Color="@Color.Accent" />
+                                </span>
+                            </FluentMenuItem>
+
+                        }
+                        @if (User.DisableNotifications == true)
+                        {
+                            <FluentMenuItem OnClick="@(async () => await UserDtoDataService.DisableEnableNotification(User, SessionManager.GetMyUserDto().Id))">
+                                Skru på notifikasjoner
+                                <span slot="start">
+                                    <FluentIcon Value="@(new Icons.Filled.Size12.AlertSnooze())" Color="@Color.Accent" />
+                                </span>
+                            </FluentMenuItem>
+                        }
+                        else
+                        {
+                            <FluentMenuItem OnClick="@(async () => await UserDtoDataService.DisableEnableNotification(User, SessionManager.GetMyUserDto().Id))">
+                                Skru av notifikasjoner
+                                <span slot="start">
+                                    <FluentIcon Value="@(new Icons.Filled.Size12.Alert())" Color="@Color.Accent" />
+                                </span>
+                            </FluentMenuItem>
+                        }
+
+
+                    </FluentMenu>
+                </FluentStack>
+            </FluentLayout>
+        </div>
+    </div>
 </div>
 
 
 @code
 {
-	bool _isEllipsisMenuOpen;
-	bool _open = false;
-	[Parameter] public required UserDto User { get; set; } = default!;
-	private bool _isEditModalVisible = false;
-	private string UserTypeClass => User?.UserType == UserType.Parent ? "card-forelder" : "card-barn";
+    bool _isEllipsisMenuOpen;
+    bool _open = false;
+    [Parameter] public required UserDto User { get; set; } = default!;
+    private bool _isEditModalVisible = false;
+    private string UserTypeClass => User?.UserType == UserType.Parent ? "card-forelder" : "card-barn";
 
 
-	private string GetAnimationDirection()
-	{
-		if (User.DisableNotifications == true || User.NotificationSubscription != null)
-			return "-1";
-		else
-			return "1";
-	}
+    private string GetAnimationDirection()
+    {
+        if (User.DisableNotifications == true || User.NotificationSubscription != null)
+            return "-1";
+        else
+            return "1";
+    }
 
-	private async void ShowEditModal()
-	{
-		try
-		{
-			DialogParameters parameters = new()
-				{
-					Title = $"Rediger {User.Username}",
-					PrimaryAction = "Yes",
-					PrimaryActionEnabled = false,
-					SecondaryAction = "No",
-					TrapFocus = false,
-					Modal = true,
-					PreventScroll = true
-				};
-			var dialog = await DialogService.ShowDialogAsync<UserEditModal2>(User, parameters);
-			var result = await dialog.Result;
-		}
-		catch (Exception e)
-		{
-			GlobalVm.AddException(e);
-		}
-	}
-
-
-	private async void DisableEnableNotification()
-	{
-		try
-		{
-
-			using var task = GlobalVm.AddTask("Subscriber");
-			var token = task.GetToken();
-
-			var clone = new UserDto();
-			Eiriklb.Utils.ObjectSync.Instance.Update(clone, User);
-			clone.DisableNotifications = !clone.DisableNotifications;
-			if (clone.DisableNotifications == false)
-				clone.NotificationSubscription = null;
-
-			clone.LastChangeBy = SessionManager.GetMyUserDto().Id;
-			clone.LastChangedAt = DateTime.UtcNow;
-			await UserDtoDataService.Save(clone, token);
-
-		}
-		catch (Exception ex)
-		{
-			GlobalVm.AddException(ex);
-		}
-	}
+    private async void ShowEditModal()
+    {
+        try
+        {
+            DialogParameters parameters = new()
+            {
+                Title = $"Rediger {User.Username}",
+                PrimaryAction = "Yes",
+                PrimaryActionEnabled = false,
+                SecondaryAction = "No",
+                TrapFocus = false,
+                Modal = true,
+                PreventScroll = true
+            };
+            var dialog = await DialogService.ShowDialogAsync<UserEditModal2>(User, parameters);
+            var result = await dialog.Result;
+        }
+        catch (Exception e)
+        {
+            GlobalVm.AddException(e);
+        }
+    }
 
 
-	private async void SendTestWebPushNotifkasjon()
-	{
-		try
-		{
+    // private async void DisableEnableNotification()
+    // {
+    // 	try
+    // 	{
 
-			using var task = GlobalVm.AddTask("Sender notification");
-			var token = task.GetToken();
+    // 		using var task = GlobalVm.AddTask("Subscriber");
+    // 		var token = task.GetToken();
 
-			var myUser = SessionManager.GetMyUserDto();
+    // 		var clone = new UserDto();
+    // 		Eiriklb.Utils.ObjectSync.Instance.Update(clone, User);
+    // 		clone.DisableNotifications = !clone.DisableNotifications;
+    // 		if (clone.DisableNotifications == false)
+    // 			clone.NotificationSubscription = null;
 
+    // 		clone.LastChangeBy = SessionManager.GetMyUserDto().Id;
+    // 		clone.LastChangedAt = DateTime.UtcNow;
+    // 		await UserDtoDataService.Save(clone, token);
 
-			NotificationDto notificationDto = new()
-				{
-					FamilyId = User.FamilyId ?? "",
-					Id = Guid.NewGuid().ToString(),
-					IsUnread = true,
-					Title = "Test",
-					NotificationDtoType = NotificationDtoType.Todo,
-					ReferenceId = null,
-					Text = "Test melding fra " + myUser.FirstName,
-					UserId = User.Id,
-					CreatedAt = DateTime.UtcNow,
-					CreatedById = myUser.Id
-				};
-			await NotificationManager.WebPushNotify([notificationDto], token);
-
-		}
-		catch (Exception ex)
-		{
-			GlobalVm.AddException(ex);
-		}
-	}
+    // 	}
+    // 	catch (Exception ex)
+    // 	{
+    // 		GlobalVm.AddException(ex);
+    // 	}
+    // }
 
 
-	private void NavigateToUserWallet()
-	{
-		var userId = User.Id;
-		NavigationManager.NavigateTo($"/UserWallet?userId={userId}");
-	}
+    private async void SendTestWebPushNotifkasjon()
+    {
+        try
+        {
 
-	private void HideEditModal()
-	{
-		_isEditModalVisible = false;
-		StateHasChanged();
-	}
+            using var task = GlobalVm.AddTask("Sender notification");
+            var token = task.GetToken();
 
-	protected override void OnInitialized()
-	{
-
-		User.PropertyChanged += TriggerStatChanged;
-		User.TodosToApprove.CollectionChanged += TodosToApproveChanged;
-	}
+            var myUser = SessionManager.GetMyUserDto();
 
 
-	private Guid _lastTriggerGuid = Guid.Empty;
-	private async void TriggerStatChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		var guid = Guid.NewGuid();
-		_lastTriggerGuid = guid;
-		await Task.Delay(50);
+            NotificationDto notificationDto = new()
+            {
+                FamilyId = User.FamilyId ?? "",
+                Id = Guid.NewGuid().ToString(),
+                IsUnread = true,
+                Title = "Test",
+                NotificationDtoType = NotificationDtoType.Todo,
+                ReferenceId = null,
+                Text = "Test melding fra " + myUser.FirstName,
+                UserId = User.Id,
+                CreatedAt = DateTime.UtcNow,
+                CreatedById = myUser.Id
+            };
+            await NotificationManager.WebPushNotify([notificationDto], UserDtoDataService, token);
 
-		if (guid != _lastTriggerGuid)
-			return;
-		await this.InvokeAsync(() => StateHasChanged());
-	}
-
-
-	private async void TodosToApproveChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs args)
-	{
-		await this.InvokeAsync(() => this.StateHasChanged());
-	}
-
-
-	private string GetFormattedCreationTime()
-	{
-		var ts = DateTime.UtcNow - User.CreatedAt;
-
-		var months = ts.TotalDays / 30;
-
-		if (months > 1)
-			return Math.Round(months, 0) + " mnd siden";
-
-		var uker = ts.TotalDays / 7;
-
-		if (uker > 1)
-			return Math.Round(uker, 0) + " uker siden";
-
-		if (ts.TotalDays > 1)
-			return Math.Round(ts.TotalDays, 0) + " dager siden";
+        }
+        catch (Exception ex)
+        {
+            GlobalVm.AddException(ex);
+        }
+    }
 
 
-		if (ts.TotalHours > 1)
-			return Math.Round(ts.TotalHours, 0) + " timer siden";
+    private void NavigateToUserWallet()
+    {
+        var userId = User.Id;
+        NavigationManager.NavigateTo($"/UserWallet?userId={userId}");
+    }
 
-		return "Siste time";
-	}
+    private void HideEditModal()
+    {
+        _isEditModalVisible = false;
+        StateHasChanged();
+    }
 
-	public void Dispose()
-	{
-		User.PropertyChanged -= TriggerStatChanged;
-		User.TodosToApprove.CollectionChanged -= TodosToApproveChanged;
-	}
+    protected override void OnInitialized()
+    {
+
+        User.PropertyChanged += TriggerStatChanged;
+        User.TodosToApprove.CollectionChanged += TodosToApproveChanged;
+    }
+
+
+    private Guid _lastTriggerGuid = Guid.Empty;
+    private async void TriggerStatChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        var guid = Guid.NewGuid();
+        _lastTriggerGuid = guid;
+        await Task.Delay(50);
+
+        if (guid != _lastTriggerGuid)
+            return;
+        await this.InvokeAsync(() => StateHasChanged());
+    }
+
+
+    private async void TodosToApproveChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs args)
+    {
+        await this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+
+    private string GetFormattedCreationTime()
+    {
+        var ts = DateTime.UtcNow - User.CreatedAt;
+
+        var months = ts.TotalDays / 30;
+
+        if (months > 1)
+            return Math.Round(months, 0) + " mnd siden";
+
+        var uker = ts.TotalDays / 7;
+
+        if (uker > 1)
+            return Math.Round(uker, 0) + " uker siden";
+
+        if (ts.TotalDays > 1)
+            return Math.Round(ts.TotalDays, 0) + " dager siden";
+
+
+        if (ts.TotalHours > 1)
+            return Math.Round(ts.TotalHours, 0) + " timer siden";
+
+        return "Siste time";
+    }
+
+    public void Dispose()
+    {
+        User.PropertyChanged -= TriggerStatChanged;
+        User.TodosToApprove.CollectionChanged -= TodosToApproveChanged;
+    }
 
 
 

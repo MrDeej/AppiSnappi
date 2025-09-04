@@ -1,4 +1,4 @@
-﻿.card {
+﻿.usercard {
     display: flex;
     flex-direction: column; /* Ensures header, body, and footer stack vertically */
     justify-content: space-between; /* Pushes footer to the bottom */

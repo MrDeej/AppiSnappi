@@ -74,7 +74,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
 
             userDtoDataService.AddNotificationsToUsers(listNotification);
             await dbContext.SaveChangesAsync(token);
-            await notificationManager.WebPushNotify(listNotification, token);
+            await notificationManager.WebPushNotify(listNotification, userDtoDataService, token);
 
         }
 
@@ -113,7 +113,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
 
             userDtoDataService.AddNotificationsToUsers(listNotification);
             await dbContext.SaveChangesAsync(token);
-            await notificationManager.WebPushNotify(listNotification, token);
+            await notificationManager.WebPushNotify(listNotification, userDtoDataService, token);
         }
 
 
