@@ -44,6 +44,7 @@ properties:
             secretRef: connectionstrings--familyapp-kv
     scale:
       minReplicas: 1
+      maxReplicas: 1
 tags:
   azd-service-name: webfrontend
   aspire-resource-name: webfrontend

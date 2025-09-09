@@ -6,6 +6,7 @@ param principalId string = ''
 
 @description('Tags that will be applied to all resources')
 param tags object = {}
+param maxReplicas int = 1
 
 var resourceToken = uniqueString(resourceGroup().id)
 
