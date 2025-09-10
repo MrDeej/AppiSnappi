@@ -25,10 +25,10 @@
 
 	<h1 tabindex="-1">Hallo familien, og velkommen til appen vår!</h1>
 
-	@if (!IsIOS)
-	{
+	@* @if (!IsIOS) *@
+	@* { *@
 		<NotificationRequester />
-	}
+	@* } *@
 
 	@if (MyUserDto != null)
 	{
