@@ -1,9 +1,26 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
+# Project name for the Azure deployment
 name: FamilyApplication-aspireapp-apphost
-services:  
-  app:
-    language: dotnet
-    project: FamilyApplication.AspireApp.AppHost.csproj
-    host: containerapp
 
+# Metadata to track the template version used
+metadata:
+  template: aspire-starter@0.2.0
+
+# Define services to be deployed
+services:
+  app:
+    # Specify the language for the project
+    language: dotnet
+    # Path to the .NET Aspire AppHost project, relative to azure.yaml
+    project: ./FamilyApplication.AspireApp.AppHost.csproj
+    # Host the service in Azure Container Apps
+    host: containerapp
+    # Optional: Specify additional Container Apps settings (e.g., environment variables, scaling)
+    containerapp:
+      ingress:
+        external: true
+        targetPort: 8080
+      scale:
+        minReplicas: 1
+        maxReplicas: 1
