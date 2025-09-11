@@ -4,6 +4,6 @@ name: FamilyApplication-aspireapp-apphost
 services:  
   app:
     language: dotnet
-    project: ./FamilyApplication.AspireApp.AppHost.csproj
+    project: FamilyApplication.AspireApp.AppHost.csproj
     host: containerapp
 
