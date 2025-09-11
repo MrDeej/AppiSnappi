@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.Web", "FamilyApplication.AspireApp.Web\FamilyApplication.AspireApp.Web.csproj", "{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyApplication.AspireApp.Web.Tests", "FamilyApplication.AspireApp.Web.Tests\FamilyApplication.AspireApp.Web.Tests.csproj", "{7F171850-8BA5-460D-B5DB-DEA3D60EC6EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE0287A5-9C2C-67CB-59BB-8494ECCCD9F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F171850-8BA5-460D-B5DB-DEA3D60EC6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F171850-8BA5-460D-B5DB-DEA3D60EC6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F171850-8BA5-460D-B5DB-DEA3D60EC6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F171850-8BA5-460D-B5DB-DEA3D60EC6EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

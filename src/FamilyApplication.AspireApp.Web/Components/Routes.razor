@@ -34,7 +34,8 @@
 			var user = authState.User;
 
 			// Redirect based on authentication state
-			if (user.Identity?.IsAuthenticated == true )
+			// If name is not null, then a user has previously logged on the application and has created a user account
+			if (user.Identity?.IsAuthenticated == true || user.Identity?.Name != null)
 			{
 				NavigationManager.NavigateTo("/home", true);
 			}
