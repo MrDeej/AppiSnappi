@@ -49,28 +49,18 @@ jobs:
           azd config set alpha.aca.persistIngressSessionAffinity on
         working-directory: src/FamilyApplication.AspireApp.AppHost
 
-      - name: Create AZD Environment if Needed
-        run: |
-          if ! azd env list | grep -q "$AZURE_ENV_NAME"; then
-            azd env new "$AZURE_ENV_NAME" --location "$AZURE_LOCATION" --subscription "$AZURE_SUBSCRIPTION_ID"
-          fi
-          azd env select "$AZURE_ENV_NAME"
-        working-directory: src/FamilyApplication.AspireApp.AppHost
-
-      - name: Set Unique Container Tag
-        run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          azd env set CONTAINER_TAG $SHORT_SHA
-        working-directory: src/FamilyApplication.AspireApp.AppHost
-
-      - name: Debug AZD Env Values
-        run: azd env get-values
-        working-directory: src/FamilyApplication.AspireApp.AppHost
-
-      - name: Provision and Deploy Application
-        run: azd up --no-prompt
-        working-directory: src/FamilyApplication.AspireApp.AppHost
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+        working-directory: ./MyAspireApp.AppHost
         env:
-          AZD_DEBUG: true  # For troubleshooting; shows detailed build/deploy logs
-          DOCKER_BUILDKIT: 1  # Enables BuildKit for more reliable builds
-          DOCKER_BUILD_ARGS: "--no-cache"  # Forces full image rebuild without Docker caching
+         AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+         AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+         AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Application
+        run: azd deploy --no-prompt
+        working-directory: ./MyAspireApp.AppHost
+        env:
+         AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+         AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+         AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
