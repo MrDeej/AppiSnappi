@@ -43,6 +43,14 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
+      - name: Create AZD Environment if Needed
+        run: |
+          if ! azd env list | grep -q "$AZURE_ENV_NAME"; then
+            azd env new "$AZURE_ENV_NAME" --location "$AZURE_LOCATION" --subscription "$AZURE_SUBSCRIPTION_ID"
+          fi
+          azd env select "$AZURE_ENV_NAME"
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
       - name: Set Unique Container Tag
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
