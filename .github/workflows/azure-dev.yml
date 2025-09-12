@@ -46,7 +46,9 @@ jobs:
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
+        working-directory: src/FamilyApplication.AspireApp.AppHost
 
       - name: Deploy Application
         run: azd deploy --no-prompt
+        working-directory: src/FamilyApplication.AspireApp.AppHost
         
