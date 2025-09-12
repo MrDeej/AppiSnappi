@@ -1,26 +1,47 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: Deploy Aspire App
 
-# Project name for the Azure deployment
-name: FamilyApplication-aspireapp-apphost
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
-# Metadata to track the template version used
-metadata:
-  template: aspire-starter@0.2.0
+permissions:
+  id-token: write
+  contents: read
 
-# Define services to be deployed
-services:
-  app:
-    # Specify the language for the project
-    language: dotnet
-    # Path to the .NET Aspire AppHost project, relative to azure.yaml
-    project: ./FamilyApplication.AspireApp.AppHost.csproj
-    # Host the service in Azure Container Apps
-    host: containerapp
-    # Optional: Specify additional Container Apps settings (e.g., environment variables, scaling)
-    containerapp:
-      ingress:
-        external: true
-        targetPort: 8080
-      scale:
-        minReplicas: 1
-        maxReplicas: 1
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup AZD
+        uses: Azure/setup-azd@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: | 
+            8.0.x
+            9.0.x
+
+      - name: AZD Auth Login
+        run: azd auth login
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
+      - name: AZD Provision
+        run: azd provision --no-prompt
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
+      - name: AZD Deploy
+        run: azd deploy --no-prompt
+        working-directory: src/FamilyApplication.AspireApp.AppHost
