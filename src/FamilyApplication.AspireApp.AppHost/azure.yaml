@@ -34,14 +34,30 @@ jobs:
             8.0.x
             9.0.x
 
-      - name: AZD Auth Login
-        run: azd auth login
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: Debug Directory
+        run: pwd && ls -la
         working-directory: src/FamilyApplication.AspireApp.AppHost
 
       - name: AZD Provision
         run: azd provision --no-prompt
         working-directory: src/FamilyApplication.AspireApp.AppHost
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: AZD Deploy
         run: azd deploy --no-prompt
         working-directory: src/FamilyApplication.AspireApp.AppHost
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
