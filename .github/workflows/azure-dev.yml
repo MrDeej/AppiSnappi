@@ -43,6 +43,12 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
+      - name: Enable Experimental Features
+        run: |
+          azd config set alpha.aca.persistDomains on
+          azd config set alpha.aca.persistIngressSessionAffinity on
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
       - name: Create AZD Environment if Needed
         run: |
           if ! azd env list | grep -q "$AZURE_ENV_NAME"; then
