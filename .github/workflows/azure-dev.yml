@@ -63,8 +63,14 @@ jobs:
           azd env set CONTAINER_TAG $SHORT_SHA
         working-directory: src/FamilyApplication.AspireApp.AppHost
 
+      - name: Debug AZD Env Values
+        run: azd env get-values
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
       - name: Provision and Deploy Application
         run: azd up --no-prompt
         working-directory: src/FamilyApplication.AspireApp.AppHost
         env:
           AZD_DEBUG: true  # For troubleshooting; shows detailed build/deploy logs
+          DOCKER_BUILDKIT: 1  # Enables BuildKit for more reliable builds
+          DOCKER_BUILD_ARGS: "--no-cache"  # Forces full image rebuild without Docker caching
