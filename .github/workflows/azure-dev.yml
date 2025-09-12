@@ -35,6 +35,10 @@ jobs:
             8.x.x
             9.x.x
 
+      - name: Restore NuGet Packages
+        run: dotnet restore FamilyApplication.AspireApp.sln
+        working-directory: src
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
