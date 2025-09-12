@@ -48,7 +48,14 @@ jobs:
         run: azd provision --no-prompt
         working-directory: src/FamilyApplication.AspireApp.AppHost
 
+      - name: Set Unique Container Tag
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          azd env set CONTAINER_TAG $SHORT_SHA
+        working-directory: src/FamilyApplication.AspireApp.AppHost
+
       - name: Deploy Application
         run: azd deploy --no-prompt
         working-directory: src/FamilyApplication.AspireApp.AppHost
-        
+        env:
+          AZD_DEBUG: true  # For troubleshooting; shows detailed build/deploy logs
