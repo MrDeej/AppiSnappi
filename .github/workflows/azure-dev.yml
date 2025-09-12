@@ -51,7 +51,7 @@ jobs:
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
-        working-directory: ./MyAspireApp.AppHost
+        working-directory: src/FamilyApplication.AspireApp.AppHost
         env:
          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy Application
         run: azd deploy --no-prompt
-        working-directory: ./MyAspireApp.AppHost
+        working-directory: src/FamilyApplication.AspireApp.AppHost
         env:
          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
