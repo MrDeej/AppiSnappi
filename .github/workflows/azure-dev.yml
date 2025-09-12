@@ -27,6 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with: 
+         token: ${{ secrets.SUBMODULE_PAT }}  
          submodules: recursive
       - name: Install azd
         uses: Azure/setup-azd@v2
