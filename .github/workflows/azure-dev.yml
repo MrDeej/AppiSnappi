@@ -43,11 +43,11 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-      - name: Set Unique Container Tag
-        run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          azd env set CONTAINER_TAG $SHORT_SHA
-        working-directory: src/FamilyApplication.AspireApp.AppHost
+      # - name: Set Unique Container Tag
+      #   run: |
+      #     SHORT_SHA=$(git rev-parse --short HEAD)
+      #     azd env set CONTAINER_TAG $SHORT_SHA
+      #   working-directory: src/FamilyApplication.AspireApp.AppHost
 
       - name: Provision and Deploy Application
         run: azd up --no-prompt
