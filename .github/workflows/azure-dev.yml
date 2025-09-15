@@ -38,6 +38,14 @@ jobs:
             8.x.x
             9.x.x
 
+      - name: Log in with Azure (Federated Credentials)
+        run: |
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+        shell: pwsh
+
       - name: Restore NuGet Packages
         run: dotnet restore FamilyApplication.AspireApp.sln
         working-directory: src
@@ -49,14 +57,6 @@ jobs:
       - name: Run Tests
         run: dotnet test FamilyApplication.AspireApp.sln --no-build --verbosity normal
         working-directory: src
-
-      - name: Log in with Azure (Federated Credentials)
-        run: |
-          azd auth login `
-            --client-id "$Env:AZURE_CLIENT_ID" `
-            --federated-credential-provider "github" `
-            --tenant-id "$Env:AZURE_TENANT_ID"
-        shell: pwsh
 
       - name: Enable Experimental Features
         run: |
