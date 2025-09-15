@@ -3,27 +3,41 @@
 @using Components.Layout
 @using FamilyApplication.AspireApp.Web.Components.Shared
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Reflection
 @layout NotLoggedInLayout
 @attribute [AllowAnonymous]
 <PageTitle>AppiSnappi</PageTitle>
 
-<div style="background-color: #C8E6C9; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100dvh; text-align: center; margin: auto;">
-    <h3 style="font-family: 'Arial', sans-serif; color: #333;">Velkommen til AppiSnappi</h3>
+<div style="background-color: #C8E6C9; display: flex; flex-direction: column; height: 100vh; text-align: center; margin: 0; padding: 0; align-items: center;">
+    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h3 style="font-family: 'Arial', sans-serif; color: #333;">Velkommen til AppiSnappi</h3>
 
-    <LottiePlayer Src="lottie/lottiefamily2.json"
-								  Style="border-radius: 50%"
-								  Autoplay="true"
-								  Width="300px"
-                                  Height="300px"
-								  Speed="1" />
-    <a href="/home"
-                style="width: 300px; text-align: center; display: inline-block; padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">
-        Logg på her
-    </a>
+        <LottiePlayer Src="lottie/lottiefamily2.json"
+                      Style="border-radius: 50%"
+                      Autoplay="true"
+                      Width="300px"
+                      Height="300px"
+                      Speed="1"
+                       Loop="true"/>
+        <a href="/home"
+           style="width: 300px; text-align: center; display: inline-block; padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">
+            Logg på her
+        </a>
+    </div>
+    <footer style="padding-bottom: 10px; background-color: transparent;">
+        <p>Version: @GetVersion()</p>
+    </footer>
 </div>
 
-@code {
 
+
+
+
+@code {
+    private string GetVersion()
+    {
+        return Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
+    }
 
     private void Logon()
     {
