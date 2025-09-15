@@ -42,6 +42,14 @@ jobs:
         run: dotnet restore FamilyApplication.AspireApp.sln
         working-directory: src
 
+      - name: Build Solution
+        run: dotnet build FamilyApplication.AspireApp.sln --no-restore
+        working-directory: src
+
+      - name: Run Tests
+        run: dotnet test FamilyApplication.AspireApp.sln --no-build --verbosity normal
+        working-directory: src
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
