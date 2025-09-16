@@ -1,4 +1,5 @@
 
+using Blazored.LocalStorage;
 using BlazorServerCommon.Notifications;
 using BlazorServerCommon.Vm;
 using Eiriklb.Utils;
@@ -12,6 +13,7 @@ using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Databuffer;
 using FamilyApplication.AspireApp.Web.Databuffer.PeriodicServices;
 using FamilyApplication.AspireApp.Web.Notifications;
+using FamilyApplication.AspireApp.Web.Services;
 using FamilyApplication.AspireApp.Web.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -149,6 +151,13 @@ builder.Services.AddScoped<UserWalletSaveGoal>(sp => new UserWalletSaveGoal()
     Description = "",
     ThingToSaveFor = ""
 });
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<FamilyApplication.AspireApp.Web.Services.ThemeService>();
+
+
+
+ThemeValidator.Initialize();
 
 var app = builder.Build();
 app.UseRequestLocalization(localizationOptions);

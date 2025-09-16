@@ -1,0 +1,52 @@
+﻿@using Blazored.LocalStorage
+@using FamilyApplication.AspireApp.Web.Services
+@using System.Drawing
+@inject IJSRuntime JS
+@inject ILocalStorageService LocalStorage 
+@inject Services.ThemeService ThemeService
+@implements IDisposable
+
+<FluentStack Orientation="Orientation.Horizontal" Wrap="true">
+    @foreach (var palette in ThemeValidator.SafePalettes)
+    {
+        <FluentCard Style=@($"background-color: {palette.BackgroundHex}; width: 100px; height: 100px; cursor: pointer;")
+                    @onclick="() => SelectTheme(palette)">
+            <div style=@($"background-color: {palette.AccentHex}; width: 50px; height: 50px; border-radius: 50%; margin: auto;")></div>
+            <small>@palette.Name</small>
+        </FluentCard>
+    }
+</FluentStack>
+
+@code {
+    private async Task SelectTheme(ThemePalette palette)
+    {
+        await ThemeService.ApplyPaletteAsync(palette);
+        StateHasChanged(); // Propagates bindings
+    }
+
+
+    private string GetTextColor(string bgHex)
+    {
+        var bgColor = ColorTranslator.FromHtml(bgHex);
+        var luminance = ThemeValidator.GetRelativeLuminance(bgColor); // Reuse helper
+        return luminance > 0.179 ? "#000000" : "#FFFFFF";
+    }
+
+    public void Dispose()
+    {
+    }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if(firstRender)
+        {
+            
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override async void OnInitialized()
+    {
+    }
+}

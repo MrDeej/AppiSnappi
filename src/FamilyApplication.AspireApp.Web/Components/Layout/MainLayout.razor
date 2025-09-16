@@ -15,11 +15,17 @@
 @inject SessionManager SessionManager
 @inject IDialogService DialogService
 @implements IDisposable
-
+@using Microsoft.FluentUI.AspNetCore.Components.DesignTokens
+@inject AccentBaseColor AccentBaseColor
+@inject NeutralBaseColor NeutralBaseColor
+@inject IJSRuntime JSRuntime
+@inject Services.ThemeService ThemeService
 
 
 <AuthorizeView>
 	<Authorized>
+		
+<div @ref="rootRef">
 		<FluentLayout Style="display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0; padding: 0;">
 			<FluentHeader>
 				<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -47,7 +53,7 @@
 				<p style="margin: 0; color: #666; font-size: 0.8em;">Version: @GetVersion()</p>
 			</FluentFooter>
 		</FluentLayout>
-
+		</div>
 	</Authorized>
 	<NotAuthorized>
 		<p>Du er ikke logget på. <a href="authentication/login-callback">Logg på</a></p>
@@ -63,11 +69,20 @@
 
 @code {
 
+	private ElementReference rootRef;
 	private DotNetObjectReference<MainLayout>? dotNetHelper;
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		ThemeService.ThemeChanged += OnThemeChangedAsync;
+	}
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
 		{
+			await ThemeService.LoadSavedPaletteAsync(); // Initial load (safe here, no JS)
+			await ApplyTokensAsync(); // Initial apply
 			try
 			{
 				UserNotificationManager.SomeThingChanged += SomethingHasChanged;
@@ -97,6 +112,7 @@
 	public void Dispose()
 	{
 
+		ThemeService.ThemeChanged -= OnThemeChangedAsync;
 		UserNotificationManager.SomeThingChanged -= SomethingHasChanged;
 	}
 
@@ -122,5 +138,26 @@
 			});
 
 	}
+	private async Task OnThemeChangedAsync()
+	{
+		await ApplyTokensAsync();
+		StateHasChanged(); // Re-render for updates
+	}
+
+	private async Task ApplyTokensAsync()
+	{
+		// Set Fluent tokens site-wide via root ref
+		await NeutralBaseColor.SetValueFor(rootRef, ThemeService.CurrentNeutral.ToSwatch());
+		await AccentBaseColor.SetValueFor(rootRef, ThemeService.CurrentAccent.ToSwatch());
+
+		// Fallback JS for custom app.css vars (e.g., body, non-Fluent styles)
+		var cssVars = new Dictionary<string, string>
+		{
+			{ "neutral-base-color", ThemeService.CurrentNeutral },
+			{ "accent-base-color", ThemeService.CurrentAccent }
+		};
+		await JSRuntime.InvokeVoidAsync("setCssVariables", cssVars);
+	}
+
 
 }

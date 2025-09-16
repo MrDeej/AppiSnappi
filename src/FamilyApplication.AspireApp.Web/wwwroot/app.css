@@ -1,25 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Poppins:wght@400;600&family=Fredoka+One&display=swap');
 @import '/_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css';
 :root {
-    --primary-color: #4CAF50; /* Main green theme color */
-    --secondary-color: #C8E6C9; /* Light green for the background */
-    --accent-color: #FFCC80; /* Orange accent for the card */
-    --text-color: #333333; /* General text color */
-    --light-text-color: #FFFFFF; /* For buttons or contrast text */
-    --border-color: #A5D6A7; /* For borders matching the theme */
-    --warning-color: #FFEB3B; /* Yellow for coin-like elements */
-    --error-color: #FF5722; /* For error messages */
-
-    --body-font: 'Quicksand', "Segoe UI Variable", "Segoe UI", sans-serif;
-    --heading-font: 'Poppins', sans-serif;
-    --playful-font: 'Fredoka One', cursive;
-
-
-    --accent-fill-rest: #4CAF50; /* Green for normal state */
-    --accent-fill-hover: #45A049; /* Slightly darker green for hover */
-    --accent-fill-active: #388E3C; /* Darker green for active state */
-    --accent-fill-selected: #4CAF50; /* Same as normal state for selected */
-    --accent-fill-disabled: #A5D6A7; /* Muted green for disabled state */
+    /* Your 8 backgrounds (update hexes as per your original list) */
+    --bg1: #FFFFFF; /* White */
+    --bg2: #F3F2F1; /* Light gray */
+    --bg3: #E1DFDD; /* Medium light gray */
+    --bg4: #605E5C; /* Dark gray */
+    --bg5: #323130; /* Darker gray */
+    --bg6: #000000; /* Black */
+    --bg7: #FAF9F8; /* Off-white */
+    --bg8: #EDF4FD; /* Light blue-ish */
+    /* Your 5 accents */
+    --accent1: #0078D4; /* Blue */
+    --accent2: #107C10; /* Green */
+    --accent3: #D13438; /* Red */
+    --accent4: #FFB900; /* Yellow/amber */
+    --accent5: #5B5FC6; /* Purple */
+    /* Existing mappings/defaults */
+    --neutral-base-color: var(--bg1);
+    --accent-base-color: var(--accent1);
+    /* Uncomment and map for more control (Fluent derives these from base colors) */
+    --accent-fill-rest: var(--accent-base-color); /* Normal state */
+    --accent-fill-hover: darken(var(--accent-base-color), 10%); /* Use CSS functions or hex */
+    --neutral-background-1: var(--neutral-base-color); /* For surfaces */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -33,7 +36,7 @@ body {
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
-    background-color: var(--secondary-color);
+    background-color: var(--neutral-background-1); /* Tie to Fluent token for dynamic changes */
 }
 
 .navmenu-icon {
