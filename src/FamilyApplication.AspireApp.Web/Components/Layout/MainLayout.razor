@@ -6,6 +6,7 @@
 @using FamilyApplication.AspireApp.Web.Notifications
 @using FamilyApplication.AspireApp.Web.Sessions
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Reflection
 @attribute [Authorize]
 @inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
@@ -19,12 +20,11 @@
 
 <AuthorizeView>
 	<Authorized>
-		<FluentLayout>
+		<FluentLayout Style="display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0; padding: 0;">
 			<FluentHeader>
 				<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
 					AppiSnappi
 					<FluentSpacer />
-                    @* <NotificationRequester/> *@
 					<RunningTaskAndErrorFooterContent />
 					<SessionViewer />
 					<FluentCounterBadge Count="@UserNotificationManager.UnreadCount"
@@ -43,8 +43,11 @@
 					</div>
 				</FluentBodyContent>
 			</FluentStack>
-
+			<FluentFooter Style="background-color:transparent">
+				<p style="margin: 0; color: #666; font-size: 0.8em;">Version: @GetVersion()</p>
+			</FluentFooter>
 		</FluentLayout>
+
 	</Authorized>
 	<NotAuthorized>
 		<p>Du er ikke logget på. <a href="authentication/login-callback">Logg på</a></p>
@@ -81,13 +84,16 @@
 					Console.WriteLine("iOS detected. Service Worker handler not registered.");
 				}
 			}
-			catch (Exception ex)
+			catch
 			{
 				// ignored
 			}
 		}
 	}
-
+	private string GetVersion()
+	{
+		return Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
+	}
 	public void Dispose()
 	{
 
