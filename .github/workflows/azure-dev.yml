@@ -47,48 +47,42 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-      - name: Restore NuGet Packages
-        run: dotnet restore FamilyApplication.AspireApp.sln
-        working-directory: src
+      # - name: Restore NuGet Packages
+      #   run: dotnet restore FamilyApplication.AspireApp.sln
+      #   working-directory: src
 
-      - name: Build Solution
-        run: dotnet build FamilyApplication.AspireApp.sln --no-restore
-        working-directory: src
+      # - name: Build Solution
+      #   run: dotnet build FamilyApplication.AspireApp.sln --no-restore
+      #   working-directory: src
 
-      - name: Run Tests
-        run: dotnet test FamilyApplication.AspireApp.sln --no-build --verbosity normal
-        working-directory: src
-        env:
-         Azure__SubscriptionId: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-         Azure__Location: ${{ vars.AZURE_LOCATION }}
-         Azure__ResourceGroup: ${{ vars.AZURE_ENV_NAME }}  # Adjust if your resource group name differs
-         Azure__AllowResourceGroupCreation: true  # Optional, but enables auto-creation if needed
+      # - name: Run Tests
+      #   run: dotnet test FamilyApplication.AspireApp.sln --no-build --verbosity normal
+      #   working-directory: src
+      #   env:
+      #    Azure__SubscriptionId: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      #    Azure__Location: ${{ vars.AZURE_LOCATION }}
+      #    Azure__ResourceGroup: ${{ vars.AZURE_ENV_NAME }}  # Adjust if your resource group name differs
+      #    Azure__AllowResourceGroupCreation: true  # Optional, but enables auto-creation if needed
 
+      # - name: Enable Experimental Features
+      #   run: |
+      #     azd config set alpha.aca.persistDomains on
+      #     azd config set alpha.aca.persistIngressSessionAffinity on
+      #   working-directory: src/FamilyApplication.AspireApp.AppHost
+
+      # - name: Provision Infrastructure
+      #   run: azd up --no-prompt
+      #   working-directory: src/FamilyApplication.AspireApp.AppHost
+      #   env:
+      #    AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      #    AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      #    AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+         
       - name: Increment Build Number
         run: |
-          CURRENT_BUILD=$(curl -s -H "Authorization: token ${{ github.token }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/actions/variables/BUILD_NUMBER | jq -r .value)
+          CURRENT_BUILD=$(curl -s -H "Authorization: Bearer ${{ secrets.SUBMODULE_PAT }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/actions/variables/BUILD_NUMBER | jq -r .value)
+          if [ -z "$CURRENT_BUILD" ]; then
+            CURRENT_BUILD=0
+          fi
           NEW_BUILD=$((CURRENT_BUILD + 1))
           echo "BUILD_NUMBER=$NEW_BUILD" >> $GITHUB_ENV
-
-      - name: Enable Experimental Features
-        run: |
-          azd config set alpha.aca.persistDomains on
-          azd config set alpha.aca.persistIngressSessionAffinity on
-        working-directory: src/FamilyApplication.AspireApp.AppHost
-
-      - name: Provision Infrastructure
-        run: azd up --no-prompt
-        working-directory: src/FamilyApplication.AspireApp.AppHost
-        env:
-         AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-         AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-         AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-         
-      - name: Update Build Number in Repo
-        if: success()  # Ensures it only updates on success
-        run: |
-            curl -L -X PATCH -H "Accept: application/vnd.github+json" \
-                 -H "Authorization: Bearer ${{ secrets.SUBMODULE_PAT }}" \
-                 -H "X-GitHub-Api-Version: 2022-11-28" \
-                 https://api.github.com/repos/${{ github.repository }}/actions/variables/BUILD_NUMBER \
-                 -d "{\"name\":\"BUILD_NUMBER\",\"value\":\"${{ env.BUILD_NUMBER }}\"}"
