@@ -4,7 +4,6 @@
 @inject IJSRuntime JS
 @inject ILocalStorageService LocalStorage 
 @inject Services.ThemeService ThemeService
-@implements IDisposable
 
 <FluentStack Orientation="Orientation.Horizontal" Wrap="true">
     @foreach (var palette in ThemeValidator.SafePalettes)
@@ -25,28 +24,7 @@
     }
 
 
-    private string GetTextColor(string bgHex)
-    {
-        var bgColor = ColorTranslator.FromHtml(bgHex);
-        var luminance = ThemeValidator.GetRelativeLuminance(bgColor); // Reuse helper
-        return luminance > 0.179 ? "#000000" : "#FFFFFF";
-    }
 
-    public void Dispose()
-    {
-    }
 
-    protected override async void OnAfterRender(bool firstRender)
-    {
-        if(firstRender)
-        {
-            
-        }
 
-        base.OnAfterRender(firstRender);
-    }
-
-    protected override async void OnInitialized()
-    {
-    }
 }

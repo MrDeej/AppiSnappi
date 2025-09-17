@@ -17,7 +17,7 @@ namespace FamilyApplication.AspireApp.Web.Services
             "#FFE4B5", // light orange
             "#E0FFFF", // light cyan
             "#FFDEAD", // light peach
-            "#C8E6C9"  // honeydew (default background from screenshot)
+            "#C8E6C9"  // greenish (default background from screenshot)
         };
 
         public static readonly string[] AccentColors = new[]

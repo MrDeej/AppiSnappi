@@ -4,8 +4,8 @@ namespace FamilyApplication.AspireApp.Web.Services
 {
     public class ThemeService : IAsyncDisposable
     {
-        public string CurrentAccent { get; private set; } = "#0078D4"; // Default
-        public string CurrentNeutral { get; private set; } = "#FFFFFF"; // Default
+        public string CurrentAccent { get; private set; } = "#1A7B27"; // Default
+        public string CurrentNeutral { get; private set; } = "#C8E6C9"; // Default
 
         public event Func<Task>? ThemeChanged;
 

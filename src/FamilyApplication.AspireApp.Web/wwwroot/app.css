@@ -1,28 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Poppins:wght@400;600&family=Fredoka+One&display=swap');
 @import '/_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css';
+
 :root {
-    /* Your 8 backgrounds (update hexes as per your original list) */
-    --bg1: #FFFFFF; /* White */
-    --bg2: #F3F2F1; /* Light gray */
-    --bg3: #E1DFDD; /* Medium light gray */
-    --bg4: #605E5C; /* Dark gray */
-    --bg5: #323130; /* Darker gray */
-    --bg6: #000000; /* Black */
-    --bg7: #FAF9F8; /* Off-white */
-    --bg8: #EDF4FD; /* Light blue-ish */
-    /* Your 5 accents */
-    --accent1: #0078D4; /* Blue */
-    --accent2: #107C10; /* Green */
-    --accent3: #D13438; /* Red */
-    --accent4: #FFB900; /* Yellow/amber */
-    --accent5: #5B5FC6; /* Purple */
-    /* Existing mappings/defaults */
-    --neutral-base-color: var(--bg1);
-    --accent-base-color: var(--accent1);
-    /* Uncomment and map for more control (Fluent derives these from base colors) */
+    /* Dynamic base colors with child-friendly defaults (matches your DefaultPalette) */
+    --neutral-base-color: #C8E6C9; /* Light green background (secondary-color equivalent) */
+    --accent-base-color: #008000; /* Green accent (primary-color equivalent) */
+    /* Additional custom vars for more granular control, derived where possible */
+    --primary-color: var(--accent-base-color); /* Maps to accent for consistency */
+    --secondary-color: var(--neutral-base-color); /* Maps to neutral/background */
+    --accent-color: #FFCC80; /* Orange accent for cards (keep as static or override if needed) */
+    --text-color: #333333; /* General text color */
+    --light-text-color: #FFFFFF; /* For buttons or contrast text */
+    --border-color: #A5D6A7; /* For borders matching the theme */
+    --warning-color: #FFEB3B; /* Yellow for coin-like elements */
+    --error-color: #FF5722; /* For error messages */
+
+    --body-font: 'Quicksand', "Segoe UI Variable", "Segoe UI", sans-serif;
+    --heading-font: 'Poppins', sans-serif;
+    --playful-font: 'Fredoka One', cursive;
+    /* Fluent UI accent variants, derived dynamically from base */
     --accent-fill-rest: var(--accent-base-color); /* Normal state */
-    --accent-fill-hover: darken(var(--accent-base-color), 10%); /* Use CSS functions or hex */
-    --neutral-background-1: var(--neutral-base-color); /* For surfaces */
+    --accent-fill-hover: darken(var(--accent-base-color), 10%); /* Slightly darker for hover */
+    --accent-fill-active: darken(var(--accent-base-color), 20%); /* Darker for active state */
+    --accent-fill-selected: var(--accent-base-color); /* Same as normal for selected */
+    --accent-fill-disabled: lighten(var(--accent-base-color), 30%); /* Muted for disabled state */
+    /* Neutral/Background variants (if needed for layers) */
+    --neutral-background-1: var(--neutral-base-color); /* Main background */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -31,12 +34,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-    /*--body-font: "Segoe UI Variable", "Segoe UI", sans-serif;*/
     font-family: var(--body-font);
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
-    background-color: var(--neutral-background-1); /* Tie to Fluent token for dynamic changes */
+    background-color: var(--neutral-background-1); /* Dynamic background */
 }
 
 .navmenu-icon {
@@ -113,110 +115,4 @@ footer {
     }
 
 .blazor-error-boundary {
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
-    padding: 1rem 1rem 1rem 3.7rem;
-    color: white;
-}
-
-    .blazor-error-boundary::before {
-        content: "An error has occurred. "
-    }
-
-.loading-progress {
-    position: relative;
-    display: block;
-    width: 8rem;
-    height: 8rem;
-    margin: 20vh auto 1rem auto;
-}
-
-    .loading-progress circle {
-        fill: none;
-        stroke: #e0e0e0;
-        stroke-width: 0.6rem;
-        transform-origin: 50% 50%;
-        transform: rotate(-90deg);
-    }
-
-        .loading-progress circle:last-child {
-            stroke: #1b6ec2;
-            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
-            transition: stroke-dasharray 0.05s ease-in-out;
-        }
-
-.loading-progress-text {
-    position: absolute;
-    text-align: center;
-    font-weight: bold;
-    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
-}
-
-    .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
-    }
-
-code {
-    color: #c02d76;
-}
-
-@media (max-width: 600px) {
-    .header-gutters {
-        margin: 0.5rem 3rem 0.5rem 1.5rem !important;
-    }
-
-    [dir="rtl"] .header-gutters {
-        margin: 0.5rem 1.5rem 0.5rem 3rem !important;
-    }
-
-    .main {
-        flex-direction: column !important;
-        row-gap: 0 !important;
-    }
-
-    nav.sitenav {
-        width: 100%;
-        height: 100%;
-    }
-
-    #main-menu {
-        width: 100% !important;
-    }
-
-        #main-menu > div:first-child:is(.expander) {
-            display: none;
-        }
-
-    .navmenu {
-        width: 100%;
-    }
-
-    #navmenu-toggle {
-        appearance: none;
-    }
-
-        #navmenu-toggle ~ nav {
-            display: none;
-        }
-
-        #navmenu-toggle:checked ~ nav {
-            display: block;
-        }
-
-    .navmenu-icon {
-        cursor: pointer;
-        z-index: 10;
-        display: block;
-        position: absolute;
-        top: 15px;
-        left: unset;
-        right: 20px;
-        width: 20px;
-        height: 20px;
-        border: none;
-    }
-
-    [dir="rtl"] .navmenu-icon {
-        left: 20px;
-        right: unset;
-    }
-}
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMj

@@ -24,8 +24,8 @@
 
 <AuthorizeView>
 	<Authorized>
-		
-<div @ref="rootRef">
+
+		<div @ref="rootRef">
 		<FluentLayout Style="display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0; padding: 0;">
 			<FluentHeader>
 				<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -73,16 +73,17 @@
 	private DotNetObjectReference<MainLayout>? dotNetHelper;
 
 
-	protected override async Task OnInitializedAsync()
+	protected override void OnInitialized()
 	{
 		ThemeService.ThemeChanged += OnThemeChangedAsync;
 	}
+
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
 		{
 			await ThemeService.LoadSavedPaletteAsync(); // Initial load (safe here, no JS)
-			await ApplyTokensAsync(); // Initial apply
+			// await ApplyTokensAsync(); // Initial apply
 			try
 			{
 				UserNotificationManager.SomeThingChanged += SomethingHasChanged;
@@ -149,6 +150,7 @@
 		// Set Fluent tokens site-wide via root ref
 		await NeutralBaseColor.SetValueFor(rootRef, ThemeService.CurrentNeutral.ToSwatch());
 		await AccentBaseColor.SetValueFor(rootRef, ThemeService.CurrentAccent.ToSwatch());
+
 
 		// Fallback JS for custom app.css vars (e.g., body, non-Fluent styles)
 		var cssVars = new Dictionary<string, string>
