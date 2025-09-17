@@ -4,34 +4,55 @@ namespace FamilyApplication.AspireApp.Web.Services
 {
     public static class ThemeValidator
     {
-        // Extracted from app.css (update if your var names/hexes differ)
+        // Updated with more childish, vibrant, and playful color choices, focusing on light pastels and avoiding dark backgrounds
+        // Added defaults from screenshot: background #F0FFF0 (light green), accent #008000 (green for top bar)
         public static readonly string[] BackgroundColors = new[]
         {
-        "#FFFFFF", // --bg1
-        "#F3F2F1", // --bg2
-        "#E1DFDD", // --bg3
-        "#605E5C", // --bg4
-        "#323130", // --bg5
-        "#000000", // --bg6
-        "#FAF9F8", // --bg7
-        "#EDF4FD"  // --bg8
-    };
+            "#FFFFFF", // white
+            "#FFFFE0", // light yellow
+            "#E0FFE0", // light green
+            "#EDF4FD", // light blue
+            "#FFE4E1", // light pink
+            "#E6E6FA", // light purple
+            "#FFE4B5", // light orange
+            "#E0FFFF", // light cyan
+            "#FFDEAD", // light peach
+            "#C8E6C9"  // honeydew (default background from screenshot)
+        };
 
         public static readonly string[] AccentColors = new[]
         {
-        "#0078D4", // --accent1
-        "#107C10", // --accent2
-        "#D13438", // --accent3
-        "#FFB900", // --accent4
-        "#5B5FC6"  // --accent5
-    };
+            "#0078D4", // blue
+            "#FFB900", // yellow
+            "#107C10", // green
+            "#D13438", // red
+            "#FF69B4", // hot pink
+            "#5B5FC6", // purple
+            "#FF4500", // orange
+            "#00FA9A", // spring green
+            "#FF00FF", // magenta
+            "#008000"  // green (default accent from screenshot top bar)
+        };
 
         // Precompute safe combos (run once at app startup)
         public static List<ThemePalette> SafePalettes { get; private set; } = new();
 
+        // Default palette from screenshot, to be used if none are chosen
+        public static ThemePalette DefaultPalette { get; } = new ThemePalette
+        {
+            Name = "Default",
+            BackgroundHex = "#F0FFF0",
+            AccentHex = "#008000",
+            BackgroundColor = ColorTranslator.FromHtml("#F0FFF0"),
+            AccentColor = ColorTranslator.FromHtml("#008000"),
+            IsValid = true
+        };
+
         public static void Initialize()
         {
             SafePalettes.Clear();
+            // Add default first
+            SafePalettes.Add(DefaultPalette);
             for (int bgIdx = 0; bgIdx < BackgroundColors.Length; bgIdx++)
             {
                 var bgHex = BackgroundColors[bgIdx];
@@ -46,17 +67,20 @@ namespace FamilyApplication.AspireApp.Web.Services
                 {
                     var accHex = AccentColors[accIdx];
                     var accColor = ColorTranslator.FromHtml(accHex);
-                    // Check accent bg with white text (common for buttons)
-                    var accContrast = GetContrastRatio(accColor, Color.White);
+                    var accLuminance = GetRelativeLuminance(accColor);
+                    var accentTextColor = accLuminance > 0.179 ? Color.Black : Color.White; // Dynamic text for accent
+                    var accContrast = GetContrastRatio(accColor, accentTextColor);
                     if (accContrast >= 4.5)
                     {
                         // Additional check: Accent vs bg luminance delta > 0.3 for visibility
-                        var accLuminance = GetRelativeLuminance(accColor);
                         if (Math.Abs(accLuminance - bgLuminance) > 0.3)
                         {
+                            // Skip adding the default again
+                            if (bgHex == DefaultPalette.BackgroundHex && accHex == DefaultPalette.AccentHex) continue;
+
                             SafePalettes.Add(new ThemePalette
                             {
-                                Name = $"Theme {SafePalettes.Count + 1}",
+                                Name = $"Theme {SafePalettes.Count}",
                                 BackgroundHex = bgHex,
                                 AccentHex = accHex,
                                 BackgroundColor = bgColor,
