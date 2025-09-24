@@ -1,44 +1,54 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Radzen.Blazor
-
 <CascadingAuthenticationState>
-	<Router AppAssembly="typeof(Program).Assembly" OnNavigateAsync="HandleNavigation">
-		<Found Context="routeData">
-			<RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-		</Found>
-		<NotFound>
-			<PageTitle>Not Found</PageTitle>
-			<LayoutView Layout="typeof(Layout.NotLoggedInLayout)">
-				<p>Beklager, her har familien gått seg vill.</p>
-			</LayoutView>
-		</NotFound>
-	</Router>
+    <FluentDesignSystemProvider AccentBaseColor="@themeService.AccentColor" FillColor="@themeService.FillColor" NeutralBaseColor="@themeService.NeutralBaseColor">
+        <Router AppAssembly="typeof(Program).Assembly" OnNavigateAsync="HandleNavigation">
+            <Found Context="routeData">
+                <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not Found</PageTitle>
+                <LayoutView Layout="typeof(Layout.NotLoggedInLayout)">
+                    <p>Beklager, her har familien gått seg vill.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </FluentDesignSystemProvider>
 </CascadingAuthenticationState>
-
 <FluentDialogProvider />
 <FluentMenuProvider />
 <FluentTooltipProvider />
 <FluentToastProvider />
-<RadzenComponents @rendermode="InteractiveAuto" />
+@* <RadzenComponents @rendermode="InteractiveAuto" /> *@
 
 @code {
-	[Inject] NavigationManager NavigationManager { get; set; } = default!;
-	[Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+    [Inject] private ThemeService themeService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-	private async Task HandleNavigation(NavigationContext context)
-	{
-		if (context.Path == "")
-		{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await themeService.LoadUserPreferences();
+            StateHasChanged();
+            themeService.ThemeChanged += (s, e) =>
+            {
+                StateHasChanged();
+            };
+        }
+    }
 
-			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-			var user = authState.User;
-
-			// Redirect based on authentication state
-			// If name is not null, then a user has previously logged on the application and has created a user account
-			if (user.Identity?.IsAuthenticated == true || user.Identity?.Name != null)
-			{
-				NavigationManager.NavigateTo("/home", true);
-			}
-		}
-	}
+    private async Task HandleNavigation(NavigationContext context)
+    {
+        if (context.Path == "")
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity?.IsAuthenticated == true || user.Identity?.Name != null)
+            {
+                NavigationManager.NavigateTo("/home", true);
+            }
+        }
+    }
 }

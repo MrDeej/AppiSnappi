@@ -50,7 +50,7 @@ builder.Services.AddLocalization();
 builder.Services.AddRadzenComponents();
 IEnumerable<string>? initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ');
 
-
+builder.Services.AddScoped<ThemeService>();
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(options =>
     {

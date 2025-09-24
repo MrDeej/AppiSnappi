@@ -1,0 +1,84 @@
+﻿@page "/settings"
+<FluentCard>
+    <h2>Theme Settings</h2>
+    <FluentTextField @bind-Value="themeService.AccentColor" Label="Accent Base Color (hex)" Placeholder="#RRGGBB" />
+    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyAccentColor">Apply Accent Color</FluentButton>
+
+    <FluentTextField @bind-Value="themeService.FillColor" Label="Fill Color (hex)" Placeholder="#RRGGBB" />
+    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyFillColor">Apply Fill Color</FluentButton>
+
+    <FluentTextField @bind-Value="themeService.NeutralBaseColor" Label="Neutral Base Color (hex)" Placeholder="#RRGGBB" />
+    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyNeutralBaseColor">Apply Neutral Base Color</FluentButton>
+
+    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Neutral" OnClick="@ResetColors">Reset Colors</FluentButton>
+    @if (!string.IsNullOrEmpty(debugMessage))
+    {
+        <FluentLabel Style="color: var(--accent-fill-rest);">@debugMessage</FluentLabel>
+    }
+</FluentCard>
+
+@code {
+    [Inject] private ThemeService themeService { get; set; }
+    private string debugMessage = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            themeService.ThemeChanged += (s, e) => StateHasChanged();
+        }
+    }
+
+    private async Task ApplyAccentColor()
+    {
+        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.AccentColor, @"^#[0-9A-Fa-f]{6}$"))
+        {
+            debugMessage = $"Applying accent base color: {themeService.AccentColor}";
+            await themeService.SaveAndApplyAccentColor(themeService.AccentColor);
+            debugMessage = $"Accent base color applied: {themeService.AccentColor}";
+        }
+        else
+        {
+            debugMessage = $"Invalid accent base color: {themeService.AccentColor} (use #RRGGBB format)";
+        }
+        StateHasChanged();
+    }
+
+    private async Task ApplyFillColor()
+    {
+        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.FillColor, @"^#[0-9A-Fa-f]{6}$"))
+        {
+            debugMessage = $"Applying fill color: {themeService.FillColor}";
+            await themeService.SaveAndApplyFillColor(themeService.FillColor);
+            debugMessage = $"Fill color applied: {themeService.FillColor}";
+        }
+        else
+        {
+            debugMessage = $"Invalid fill color: {themeService.FillColor} (use #RRGGBB format)";
+        }
+        StateHasChanged();
+    }
+
+    private async Task ApplyNeutralBaseColor()
+    {
+        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.NeutralBaseColor, @"^#[0-9A-Fa-f]{6}$"))
+        {
+            debugMessage = $"Applying neutral base color: {themeService.NeutralBaseColor}";
+            await themeService.SaveAndApplyNeutralBaseColor(themeService.NeutralBaseColor);
+            debugMessage = $"Neutral base color applied: {themeService.NeutralBaseColor}";
+        }
+        else
+        {
+            debugMessage = $"Invalid neutral base color: {themeService.NeutralBaseColor} (use #RRGGBB format)";
+        }
+        StateHasChanged();
+    }
+
+    private async Task ResetColors()
+    {
+        debugMessage = "Resetting colors to defaults";
+        await themeService.ResetUserPreferences();
+        debugMessage = "Colors reset: Accent = #0078D4, Fill = #4CAF50, Neutral = #4CAF50";
+        StateHasChanged();
+    }
+}
