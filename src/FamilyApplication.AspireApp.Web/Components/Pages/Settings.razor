@@ -1,84 +1,108 @@
 ﻿@page "/settings"
+@inject NavigationManager NavigationManager
 <FluentCard>
-    <h2>Theme Settings</h2>
-    <FluentTextField @bind-Value="themeService.AccentColor" Label="Accent Base Color (hex)" Placeholder="#RRGGBB" />
-    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyAccentColor">Apply Accent Color</FluentButton>
+    <FluentStack Orientation="Orientation.Vertical">
+        <h2>Tema innstillinger</h2>
+        <FluentSelect TOption="string" Value="@selectedPalette" Label="Velg Palett" ValueChanged="@(async (value) => { selectedPalette = value; await OnPaletteChanged(value); })">
+            @foreach (var palette in themeService._palettes.Keys.OrderBy(k => k))
+            {
+                <FluentOption TOption="string" Value="@palette">@palette</FluentOption>
+            }
+        </FluentSelect>
 
-    <FluentTextField @bind-Value="themeService.FillColor" Label="Fill Color (hex)" Placeholder="#RRGGBB" />
-    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyFillColor">Apply Fill Color</FluentButton>
+        @if (!string.IsNullOrEmpty(selectedPalette))
+        {
+            <FluentCard Style="@cardPreviewStyle">
+                <h3>Forhåndsvisning: @selectedPalette</h3>
+                <FluentLabel  Style="@accentLabelStyle">Accent Knapp</FluentLabel>
+                <FluentLabel Style="@fillLabelStyle">Fyll Farge</FluentLabel>
+                <FluentLabel Style="@neutralLabelStyle">Nøytral Bakgrunn</FluentLabel>
+            </FluentCard>
+        }
 
-    <FluentTextField @bind-Value="themeService.NeutralBaseColor" Label="Neutral Base Color (hex)" Placeholder="#RRGGBB" />
-    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" OnClick="@ApplyNeutralBaseColor">Apply Neutral Base Color</FluentButton>
+        <FluentButton  BackgroundColor="@previewAccent" OnClick="@ApplyPalette">Bruk Palett</FluentButton>
+        <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Neutral" OnClick="@ResetColors">Tilbakestill Farger</FluentButton>
 
-    <FluentButton Appearance="Microsoft.FluentUI.AspNetCore.Components.Appearance.Neutral" OnClick="@ResetColors">Reset Colors</FluentButton>
-    @if (!string.IsNullOrEmpty(debugMessage))
-    {
-        <FluentLabel Style="color: var(--accent-fill-rest);">@debugMessage</FluentLabel>
-    }
+        @if (!string.IsNullOrEmpty(debugMessage))
+        {
+            <FluentLabel Style="color: var(--accent-fill-rest);">@debugMessage</FluentLabel>
+        }
+    </FluentStack>
 </FluentCard>
 
 @code {
     [Inject] private ThemeService themeService { get; set; }
+    private string selectedPalette { get; set; } = "Sprø Banan";
     private string debugMessage = string.Empty;
+    private string previewAccent;
+    private string previewFill;
+    private string previewNeutral;
+    private string cardPreviewStyle => $"background-color: {previewNeutral}; margin-top: 1rem;";
+    private string accentLabelStyle => $"background-color: {previewAccent}; padding: 0.5rem; margin-top: 0.5rem;";
+    private string fillLabelStyle => $"background-color: {previewFill}; padding: 0.5rem; margin-top: 0.5rem;";
+    private string neutralLabelStyle => $"background-color: {previewNeutral}; padding: 0.5rem; margin-top: 0.5rem;";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             themeService.ThemeChanged += (s, e) => StateHasChanged();
+            await themeService.LoadUserPreferences(false);
+            selectedPalette = await themeService.GetCurrentPaletteName();
+            await UpdatePreview(selectedPalette);
         }
     }
 
-    private async Task ApplyAccentColor()
+    private async Task OnPaletteChanged(string value)
     {
-        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.AccentColor, @"^#[0-9A-Fa-f]{6}$"))
+        if (value != null)
         {
-            debugMessage = $"Applying accent base color: {themeService.AccentColor}";
-            await themeService.SaveAndApplyAccentColor(themeService.AccentColor);
-            debugMessage = $"Accent base color applied: {themeService.AccentColor}";
+            await UpdatePreview(value);
         }
-        else
+    }
+
+    private async Task UpdatePreview(string paletteName)
+    {
+        if (themeService._palettes.ContainsKey(paletteName))
         {
-            debugMessage = $"Invalid accent base color: {themeService.AccentColor} (use #RRGGBB format)";
+            var colors = themeService._palettes[paletteName];
+            previewAccent = colors.Accent;
+            previewFill = colors.Fill;
+            previewNeutral = colors.Neutral;
         }
         StateHasChanged();
     }
 
-    private async Task ApplyFillColor()
+    private async Task ApplyPalette()
     {
-        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.FillColor, @"^#[0-9A-Fa-f]{6}$"))
+        if (!string.IsNullOrEmpty(selectedPalette))
         {
-            debugMessage = $"Applying fill color: {themeService.FillColor}";
-            await themeService.SaveAndApplyFillColor(themeService.FillColor);
-            debugMessage = $"Fill color applied: {themeService.FillColor}";
+            debugMessage = $"Bruker palett: {selectedPalette}";
+            await themeService.ApplyPalette(selectedPalette);
+            debugMessage = $"Palett brukt: {selectedPalette} (Accent: {themeService.AccentColor}, Fill: {themeService.FillColor}, Neutral: {themeService.NeutralBaseColor})";
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: false);
+            StateHasChanged();
         }
         else
         {
-            debugMessage = $"Invalid fill color: {themeService.FillColor} (use #RRGGBB format)";
+            debugMessage = "Ugyldig palett valgt";
+            StateHasChanged();
         }
-        StateHasChanged();
-    }
-
-    private async Task ApplyNeutralBaseColor()
-    {
-        if (System.Text.RegularExpressions.Regex.IsMatch(themeService.NeutralBaseColor, @"^#[0-9A-Fa-f]{6}$"))
-        {
-            debugMessage = $"Applying neutral base color: {themeService.NeutralBaseColor}";
-            await themeService.SaveAndApplyNeutralBaseColor(themeService.NeutralBaseColor);
-            debugMessage = $"Neutral base color applied: {themeService.NeutralBaseColor}";
-        }
-        else
-        {
-            debugMessage = $"Invalid neutral base color: {themeService.NeutralBaseColor} (use #RRGGBB format)";
-        }
-        StateHasChanged();
     }
 
     private async Task ResetColors()
     {
-        debugMessage = "Resetting colors to defaults";
+        debugMessage = "Tilbakestiller farger til standard";
         await themeService.ResetUserPreferences();
-        debugMessage = "Colors reset: Accent = #0078D4, Fill = #4CAF50, Neutral = #4CAF50";
+        debugMessage = "Farger tilbakestilt: Accent = #4CAF50, Fill = #C8E6C9, Neutral = #FFFFFF";
+        selectedPalette = "Sprø Banan";
+        await UpdatePreview(selectedPalette);
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: false);
         StateHasChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdatePreview(selectedPalette);
     }
 }

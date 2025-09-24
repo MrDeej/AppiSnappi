@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Radzen.Blazor
 <CascadingAuthenticationState>
-    <FluentDesignSystemProvider AccentBaseColor="@themeService.AccentColor" FillColor="@themeService.FillColor" NeutralBaseColor="@themeService.NeutralBaseColor">
+    <FluentDesignSystemProvider AccentBaseColor="@themeService.AccentColor" FillColor="@themeService.FillColor" NeutralBaseColor="@themeService.NeutralBaseColor"  >
         <Router AppAssembly="typeof(Program).Assembly" OnNavigateAsync="HandleNavigation">
             <Found Context="routeData">
                 <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
@@ -13,13 +13,15 @@
                 </LayoutView>
             </NotFound>
         </Router>
+        <p style="color: var(--accent-fill-rest);">
+            Debug: AccentColor = @themeService.AccentColor, FillColor = @themeService.FillColor, NeutralBaseColor = @themeService.NeutralBaseColor
+        </p>
     </FluentDesignSystemProvider>
 </CascadingAuthenticationState>
 <FluentDialogProvider />
 <FluentMenuProvider />
 <FluentTooltipProvider />
 <FluentToastProvider />
-@* <RadzenComponents @rendermode="InteractiveAuto" /> *@
 
 @code {
     [Inject] private ThemeService themeService { get; set; }
@@ -28,12 +30,17 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        
         if (firstRender)
         {
             await themeService.LoadUserPreferences();
             StateHasChanged();
-            themeService.ThemeChanged += (s, e) =>
+            themeService.ThemeChanged += async (s, e) =>
             {
+                Console.WriteLine($"Theme changed: AccentColor = {themeService.AccentColor}, FillColor = {themeService.FillColor}, NeutralBaseColor = {themeService.NeutralBaseColor}");
+                var selectedTheme = themeService.ValgtPalett;
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                themeService.ValgtPalett = selectedTheme;
                 StateHasChanged();
             };
         }
