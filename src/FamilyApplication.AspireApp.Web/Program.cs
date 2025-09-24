@@ -2,6 +2,7 @@
 using BlazorServerCommon.Notifications;
 using BlazorServerCommon.Vm;
 using Eiriklb.Utils;
+using FamilyApplication.AspireApp.ServiceDefaults;
 using FamilyApplication.AspireApp.Web.Components;
 using FamilyApplication.AspireApp.Web.Components.FamilyEvents;
 using FamilyApplication.AspireApp.Web.Components.Home;
