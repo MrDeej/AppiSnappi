@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace FamilyApplication.AspireApp.Web.CosmosDb.User
+﻿namespace FamilyApplication.AspireApp.Web.CosmosDb.User
 {
     public static class UserExtensions
     {

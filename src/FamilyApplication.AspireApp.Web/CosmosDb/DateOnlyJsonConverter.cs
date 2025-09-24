@@ -9,7 +9,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb
             writer.WriteValue(value.ToString("yyyy-MM-dd"));
         }
 
-   
+
 
         public override DateOnly ReadJson(JsonReader reader, Type objectType, DateOnly existingValue, bool hasExistingValue, JsonSerializer serializer)
         {

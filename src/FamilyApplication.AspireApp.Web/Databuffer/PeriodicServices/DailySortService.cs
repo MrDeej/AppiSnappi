@@ -1,9 +1,4 @@
-﻿using FamilyApplication.AspireApp.Web.Databuffer;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
-namespace FamilyApplication.AspireApp.Web.Databuffer.PeriodicServices;
+﻿namespace FamilyApplication.AspireApp.Web.Databuffer.PeriodicServices;
 public class DailySortService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -43,5 +38,5 @@ public class DailySortService : BackgroundService
         }
     }
 
- 
+
 }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace FamilyApplication.AspireApp.Web.CosmosDb.User
 {
@@ -77,7 +76,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
             get => finishedAt;
             set
             {
-                if(value != finishedAt)
+                if (value != finishedAt)
                 {
                     finishedAt = value;
                     NotifyPropertyChanged();

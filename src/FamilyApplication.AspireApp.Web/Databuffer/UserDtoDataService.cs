@@ -5,12 +5,7 @@ using FamilyApplication.AspireApp.Web.CosmosDb.Family;
 using FamilyApplication.AspireApp.Web.CosmosDb.Notification;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Notifications;
-using FamilyApplication.AspireApp.Web.Sessions;
-using Microsoft.Azure.Cosmos.Core.Networking;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.Reflection.Metadata;
 
 namespace FamilyApplication.AspireApp.Web.Databuffer
 {
@@ -277,7 +272,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
 
             AddNotificationsToUsers(listNotification);
             await dbContext.SaveChangesAsync(token);
-            await notificationManager.WebPushNotify(listNotification,this, token);
+            await notificationManager.WebPushNotify(listNotification, this, token);
 
         }
 

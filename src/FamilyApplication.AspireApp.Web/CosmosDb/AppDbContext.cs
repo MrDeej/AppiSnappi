@@ -1,6 +1,5 @@
 ﻿using FamilyApplication.AspireApp.Web.CosmosDb.BlackBoard;
 using FamilyApplication.AspireApp.Web.CosmosDb.Family;
-using FamilyApplication.AspireApp.Web.CosmosDb.Notification;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,7 +57,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb
                     entity.OwnsMany(n => n.Notifications);
                 });
 
-        
+
 
             modelBuilder.Entity<BlackBoardTodoDto>(entity =>
             {

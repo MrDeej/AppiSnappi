@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.FaultInjection;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -99,7 +98,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.Family
             get { return familieEvents; }
             set
             {
-                if(familieEvents != value)
+                if (familieEvents != value)
                 {
                     familieEvents = value;
                     OnPropertyChanged();

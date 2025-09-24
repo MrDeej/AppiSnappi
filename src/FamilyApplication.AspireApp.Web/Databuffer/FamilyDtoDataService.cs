@@ -1,14 +1,10 @@
-﻿using System.Threading.RateLimiting;
-using BlazorServerCommon.Extensions;
-using Eiriklb.Utils;
+﻿using Eiriklb.Utils;
 using FamilyApplication.AspireApp.Web.CosmosDb;
 using FamilyApplication.AspireApp.Web.CosmosDb.Family;
 using FamilyApplication.AspireApp.Web.CosmosDb.Notification;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Notifications;
-using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FamilyApplication.AspireApp.Web.Databuffer
 {
@@ -58,19 +54,19 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
                 notificationText = $"{performingUser.FirstName} har endret event {fe.Title} som går den {fe.Date.ToShortDateString()}";
 
             var listNotification = (from user in familyUsers
-                                   select new NotificationDto()
-                                   {
-                                       CreatedAt = DateTime.Now,
-                                       FamilyId = familyDto.Id,
-                                       Id = Guid.NewGuid().ToString(),
-                                       NotificationDtoType = NotificationDtoType.FamilyEvent,
-                                       Text = notificationText,
-                                       Title = (isNew) ? "Ny event opprettet" : "Endret event",
-                                       ReferenceId = fe.Id.ToString(),
-                                       UserId = user.Id,
-                                       IsUnread = true,
+                                    select new NotificationDto()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        FamilyId = familyDto.Id,
+                                        Id = Guid.NewGuid().ToString(),
+                                        NotificationDtoType = NotificationDtoType.FamilyEvent,
+                                        Text = notificationText,
+                                        Title = (isNew) ? "Ny event opprettet" : "Endret event",
+                                        ReferenceId = fe.Id.ToString(),
+                                        UserId = user.Id,
+                                        IsUnread = true,
                                         CreatedById = performingUser.Id
-                                   }).ToList();
+                                    }).ToList();
 
             userDtoDataService.AddNotificationsToUsers(listNotification);
             await dbContext.SaveChangesAsync(token);
@@ -95,7 +91,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
 
             string notificationText;
 
-                notificationText = $"{performingUser.FirstName} har avbrutt event {fe.Title} som går den {fe.Date.ToShortDateString()}";
+            notificationText = $"{performingUser.FirstName} har avbrutt event {fe.Title} som går den {fe.Date.ToShortDateString()}";
             var listNotification = (from user in familyUsers
                                     select new NotificationDto()
                                     {
@@ -108,7 +104,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
                                         UserId = user.Id,
                                         IsUnread = true,
                                         Title = "Slettet event",
-                                         CreatedById = performingUser.Id
+                                        CreatedById = performingUser.Id
                                     }).ToList();
 
             userDtoDataService.AddNotificationsToUsers(listNotification);

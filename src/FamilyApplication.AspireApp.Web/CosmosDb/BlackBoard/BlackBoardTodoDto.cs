@@ -1,6 +1,5 @@
 ﻿using FamilyApplication.AspireApp.Web.CosmosDb.Family;
 using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -15,12 +14,12 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.BlackBoard
         public required string FamilyId { get; set; }
 
         private FamilyTodoDto todo = default!;
-        public required FamilyTodoDto Todo 
+        public required FamilyTodoDto Todo
         {
             get => todo;
             set
             {
-                if(value != todo)
+                if (value != todo)
                 {
                     todo = value;
                     NotifyPropertyChanged();
@@ -39,8 +38,8 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.BlackBoard
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
-    
+
+
 
 
     }

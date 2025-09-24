@@ -309,7 +309,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
             }
             set
             {
-                if(value != notifications)
+                if (value != notifications)
                 {
                     notifications = value;
                     NotifyPropertyChanged();
@@ -327,6 +327,6 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
 
 
 
-      
+
     }
 }

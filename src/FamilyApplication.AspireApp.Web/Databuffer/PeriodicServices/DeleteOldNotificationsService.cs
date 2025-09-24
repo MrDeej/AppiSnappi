@@ -48,7 +48,7 @@
                     _logger.LogInformation("DailySortService will run next at {NextRun}", nextMidnight);
                     await Task.Delay(delay, stoppingToken); // Wait until midnight
 
-                   
+
                 }
                 catch (Exception ex)
                 {

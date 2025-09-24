@@ -1,7 +1,4 @@
-﻿using Microsoft.FluentUI.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using Microsoft.JSInterop;
 
 public class ThemeService
 {

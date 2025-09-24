@@ -1,6 +1,6 @@
 ﻿namespace FamilyApplication.AspireApp.Web.Components.Users
 {
-    public class LottieFileService 
+    public class LottieFileService
     {
 
         private readonly LottieFileRec _emptyRec = new LottieFileRec("Finner ingenting", "/lottie/lottieempty.json", true);

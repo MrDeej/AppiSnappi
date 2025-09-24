@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using Eiriklb.Utils;
+﻿using Eiriklb.Utils;
 using FamilyApplication.AspireApp.Web.CosmosDb.Family;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Databuffer;
 using FamilyApplication.AspireApp.Web.Sessions;
+using System.Collections.ObjectModel;
 namespace FamilyApplication.AspireApp.Web.Components.FamilyEvents;
 
 public class FamilyEventService : IDisposable
@@ -26,14 +24,14 @@ public class FamilyEventService : IDisposable
         _globalVm = vm;
         _familyDto = _globalVm.FamilyDtos.FirstOrDefault(a => a.FamilyId == _userDto.FamilyId);
 
-        if( _familyDto != null )
+        if (_familyDto != null)
             _familyDto.FamilieEvents.CollectionChanged += FamilieEvents_CollectionChanged;
 
         Refresh();
     }
 
     private Guid delayGuidCollectionChanged;
-  
+
     private async void FamilieEvents_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         var tmpGuid = Guid.NewGuid();
@@ -52,7 +50,7 @@ public class FamilyEventService : IDisposable
             return;
 
         RefreshBirthdays(_familyDto);
-       
+
 
         var nye = from myrows in _familyDto.FamilieEvents
                   join finnes in ObsColl on myrows.Id equals finnes.Id
@@ -62,22 +60,22 @@ public class FamilyEventService : IDisposable
                   select myrows;
 
         var fjernes = (from finnes in ObsColl
-                      join ny in _familyDto.FamilieEvents on finnes.Id equals ny.Id
-                      into joined
-                      from j in joined.DefaultIfEmpty()
-                      where j == null
-                      select finnes).ToArray();
+                       join ny in _familyDto.FamilieEvents on finnes.Id equals ny.Id
+                       into joined
+                       from j in joined.DefaultIfEmpty()
+                       where j == null
+                       select finnes).ToArray();
 
         var endret = false;
 
-        foreach(var ny in nye)
+        foreach (var ny in nye)
         {
             endret = true;
             ObsColl.Add(ny);
             ny.PropertyChanged += familyEvent_PropertyChanged;
         }
 
-        foreach(var fjernet in fjernes)
+        foreach (var fjernet in fjernes)
         {
             endret = true;
             ObsColl.Remove(fjernet);
@@ -86,7 +84,7 @@ public class FamilyEventService : IDisposable
 
         if (endret)
         {
-            var sortedEvents = ObsColl.OrderBy(e => e.Date).ThenBy(a=>a.Time).ToList();
+            var sortedEvents = ObsColl.OrderBy(e => e.Date).ThenBy(a => a.Time).ToList();
             ObsColl.Clear();
             foreach (var evt in sortedEvents)
             {
@@ -107,11 +105,11 @@ public class FamilyEventService : IDisposable
                         select myrows).Take(3);
 
         var fjernes = (from myrows in ObsColl3Neste
-                      join skal in skalVære on myrows.Id equals skal.Id
-                      into joined
-                      from j in joined.DefaultIfEmpty()
-                      where j == null
-                      select myrows).ToArray();
+                       join skal in skalVære on myrows.Id equals skal.Id
+                       into joined
+                       from j in joined.DefaultIfEmpty()
+                       where j == null
+                       select myrows).ToArray();
 
         var leggesTil = from myrows in skalVære
                         join finnes in ObsColl3Neste on myrows.Id equals finnes.Id
@@ -131,7 +129,7 @@ public class FamilyEventService : IDisposable
             ObsColl3Neste.SortedInsert(rad, a => a.Date, a => a.Time);
         }
 
-        if(trenesteChanged)
+        if (trenesteChanged)
             TreNesteHasChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -140,7 +138,7 @@ public class FamilyEventService : IDisposable
         var birthDays = from myrows in _globalVm.UserDtos
                         select new FamilyEvent()
                         {
-                            Date = new DateTime(DateTime.Now.Year,myrows.BirthDate.Month,myrows.BirthDate.Day),
+                            Date = new DateTime(DateTime.Now.Year, myrows.BirthDate.Month, myrows.BirthDate.Day),
                             Description = "",
                             EndDate = new DateTime(DateTime.Now.Year, myrows.BirthDate.Month, myrows.BirthDate.Day),
                             Time = "",

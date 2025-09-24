@@ -33,7 +33,7 @@ namespace FamilyApplication.AspireApp.Web.Sessions
 
                 if (user?.Identity?.IsAuthenticated == true)
                 {
-                    var userId = user.Claims.FirstOrDefault(a=>a.Type == "emails")?.Value;
+                    var userId = user.Claims.FirstOrDefault(a => a.Type == "emails")?.Value;
                     if (userId != null)
                     {
                         var userAccess = globalVm.UserDtos.SingleOrDefault(a => a.Username == userId);

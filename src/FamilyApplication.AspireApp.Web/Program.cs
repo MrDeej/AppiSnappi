@@ -2,7 +2,6 @@
 using BlazorServerCommon.Notifications;
 using BlazorServerCommon.Vm;
 using Eiriklb.Utils;
-using FamilyApplication.AspireApp.Web;
 using FamilyApplication.AspireApp.Web.Components;
 using FamilyApplication.AspireApp.Web.Components.FamilyEvents;
 using FamilyApplication.AspireApp.Web.Components.Home;
@@ -11,7 +10,6 @@ using FamilyApplication.AspireApp.Web.CosmosDb;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Databuffer;
 using FamilyApplication.AspireApp.Web.Databuffer.PeriodicServices;
-using FamilyApplication.AspireApp.Web.Notifications;
 using FamilyApplication.AspireApp.Web.Sessions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
-using Microsoft.IdentityModel.Tokens;
 using Radzen;
 using System.Globalization;
-using System.Security.Claims;
 
 var cultureInfo = new CultureInfo("nb-NO")
 {
@@ -156,7 +152,7 @@ app.UseRequestLocalization(localizationOptions);
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-   
+
     app.UseHsts();
 }
 app.UseStaticFiles(); // This must be first to allow access to static files without authentication

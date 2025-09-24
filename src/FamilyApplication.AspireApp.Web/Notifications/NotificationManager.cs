@@ -1,10 +1,8 @@
-﻿using Azure.Security.KeyVault.Secrets;
-using BlazorServerCommon.Notifications;
+﻿using BlazorServerCommon.Notifications;
 using FamilyApplication.AspireApp.Web.CosmosDb.Notification;
 using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using FamilyApplication.AspireApp.Web.Databuffer;
 using FamilyApplication.AspireApp.Web.Sessions;
-using Microsoft.Azure.Cosmos;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Net;
@@ -61,7 +59,7 @@ namespace FamilyApplication.AspireApp.Web.Notifications
                 _toastService.ShowToast(ToastIntent.Info, "Varsler er aktivert");
             }
 
-            if(allOk)
+            if (allOk)
                 _toastService.ShowToast(ToastIntent.Info, "Varsler var allerede aktivert");
 
         }
@@ -110,7 +108,7 @@ namespace FamilyApplication.AspireApp.Web.Notifications
             {
                 if (ex.StatusCode == HttpStatusCode.Gone || ex.Message.Contains("Subscription is no longer valid"))
                 {
-                    await userDtoDataservice.DisableEnableNotification(user,"System");  // Implement this method as needed
+                    await userDtoDataservice.DisableEnableNotification(user, "System");  // Implement this method as needed
                 }
                 else
                 {
@@ -119,6 +117,6 @@ namespace FamilyApplication.AspireApp.Web.Notifications
             }
         }
 
-       
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using FamilyApplication.AspireApp.Web.CosmosDb.User;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace FamilyApplication.AspireApp.Web.CosmosDb.Family

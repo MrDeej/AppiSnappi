@@ -10,10 +10,10 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.Family
         private DateTime date;
         public DateTime Date
         {
-            get => date; 
+            get => date;
             set
             {
-                if(value != date)
+                if (value != date)
                 {
                     date = value;
                     OnPropertyChanged();
@@ -93,7 +93,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.Family
             get => tag;
             set
             {
-                if(value != tag)
+                if (value != tag)
                 {
                     tag = value;
                     OnPropertyChanged();

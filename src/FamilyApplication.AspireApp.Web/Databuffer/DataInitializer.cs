@@ -1,8 +1,5 @@
 ﻿
 using FamilyApplication.AspireApp.Web.CosmosDb;
-using FamilyApplication.AspireApp.Web.CosmosDb.User;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace FamilyApplication.AspireApp.Web.Databuffer
 {

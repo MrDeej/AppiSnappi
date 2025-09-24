@@ -92,7 +92,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
             get => _transactions;
             set
             {
-                if(value != _transactions)
+                if (value != _transactions)
                 {
                     _transactions = value;
                     NotifyPropertyChanged();

@@ -1,8 +1,6 @@
 ﻿using BlazorServerCommon.Extensions;
 using FamilyApplication.AspireApp.Web.CosmosDb;
 using FamilyApplication.AspireApp.Web.CosmosDb.BlackBoard;
-using FamilyApplication.AspireApp.Web.CosmosDb.Family;
-using FamilyApplication.AspireApp.Web.CosmosDb.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyApplication.AspireApp.Web.Databuffer
@@ -27,7 +25,7 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
         {
             dbContext.BlackBoardDtos.Add(blackBoardDto);
             await dbContext.SaveChangesAsync(token);
-            vm.BlackBoardDtos.Insert(0,blackBoardDto);
+            vm.BlackBoardDtos.Insert(0, blackBoardDto);
         }
 
         public async Task EditBlackBoardTodo(BlackBoardTodoDto dto, CancellationToken token)

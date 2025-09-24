@@ -1,6 +1,5 @@
 ﻿using FamilyApplication.AspireApp.Web.CosmosDb.Family;
 using FamilyApplication.AspireApp.Web.Databuffer;
-using Microsoft.AspNetCore.Components;
 using System.Collections.ObjectModel;
 using System.Threading.Channels;
 
@@ -28,7 +27,7 @@ namespace FamilyApplication.AspireApp.Web.Components.Home
             writer = channel.Writer;
             _processingTask = ProcessUpdatesAsync();
             _vm = vm;
-            foreach(var user in vm.UserDtos)
+            foreach (var user in vm.UserDtos)
             {
                 user.TodosToApprove.CollectionChanged += TodosToApprove_CollectionChanged;
             }
