@@ -6,7 +6,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
 {
     public record UserWalletSaveGoal : INotifyPropertyChanged
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
 
 
         private string _thingToSaveFor = default!;

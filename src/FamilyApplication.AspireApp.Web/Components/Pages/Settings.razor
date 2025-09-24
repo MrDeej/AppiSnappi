@@ -3,7 +3,7 @@
 <FluentCard>
     <FluentStack Orientation="Orientation.Vertical">
         <h2>Tema innstillinger</h2>
-        <FluentSelect TOption="string" Value="@selectedPalette" Label="Velg Palett" ValueChanged="@(async (value) => { selectedPalette = value; await OnPaletteChanged(value); })">
+        <FluentSelect TOption="string" Value="@selectedPalette" Label="Velg Palett" ValueChanged="@((value) => { selectedPalette = value; OnPaletteChanged(value); })">
             @foreach (var palette in themeService._palettes.Keys.OrderBy(k => k))
             {
                 <FluentOption TOption="string" Value="@palette">@palette</FluentOption>
@@ -31,12 +31,12 @@
 </FluentCard>
 
 @code {
-    [Inject] private ThemeService themeService { get; set; }
+    [Inject] private ThemeService themeService { get; set; } = default!;
     private string selectedPalette { get; set; } = "Sprø Banan";
     private string debugMessage = string.Empty;
-    private string previewAccent;
-    private string previewFill;
-    private string previewNeutral;
+    private string previewAccent = "";
+    private string previewFill = "";
+    private string previewNeutral = "";
     private string cardPreviewStyle => $"background-color: {previewNeutral}; margin-top: 1rem;";
     private string accentLabelStyle => $"background-color: {previewAccent}; padding: 0.5rem; margin-top: 0.5rem;";
     private string fillLabelStyle => $"background-color: {previewFill}; padding: 0.5rem; margin-top: 0.5rem;";
@@ -48,20 +48,20 @@
         {
             themeService.ThemeChanged += (s, e) => StateHasChanged();
             await themeService.LoadUserPreferences(false);
-            selectedPalette = await themeService.GetCurrentPaletteName();
-            await UpdatePreview(selectedPalette);
+            selectedPalette = themeService.GetCurrentPaletteName();
+            UpdatePreview(selectedPalette);
         }
     }
 
-    private async Task OnPaletteChanged(string value)
+    private void OnPaletteChanged(string value)
     {
         if (value != null)
         {
-            await UpdatePreview(value);
+            UpdatePreview(value);
         }
     }
 
-    private async Task UpdatePreview(string paletteName)
+    private void UpdatePreview(string paletteName)
     {
         if (themeService._palettes.ContainsKey(paletteName))
         {
@@ -96,13 +96,14 @@
         await themeService.ResetUserPreferences();
         debugMessage = "Farger tilbakestilt: Accent = #4CAF50, Fill = #C8E6C9, Neutral = #FFFFFF";
         selectedPalette = "Sprø Banan";
-        await UpdatePreview(selectedPalette);
+        UpdatePreview(selectedPalette);
         NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: false);
         StateHasChanged();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        await UpdatePreview(selectedPalette);
+        UpdatePreview(selectedPalette);
     }
+
 }

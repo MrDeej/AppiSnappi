@@ -118,10 +118,10 @@
     public EventCallback<FamilyEvent> DeleteEventCallback { get; set; }
 
     [Inject]
-    private IDialogService DialogService { get; set; }
+    private IDialogService DialogService { get; set; } = default!;
 
     [Inject]
-    private IJSRuntime JSRuntime { get; set; }
+    private IJSRuntime JSRuntime { get; set; } = default!;
 
     private FamilyEvent currentEvent = new();
     private ElementReference timelineRef;

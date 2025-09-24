@@ -87,7 +87,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.Family
             }
         }
 
-        private string tag { get; set; }
+        private string tag { get; set; } = default!;
         public string Tag
         {
             get => tag;

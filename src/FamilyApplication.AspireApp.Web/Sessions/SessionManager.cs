@@ -6,7 +6,7 @@ namespace FamilyApplication.AspireApp.Web.Sessions
 {
     public class SessionManager
     {
-        private readonly ConcurrentDictionary<string, UserDto> _activeSessions = new();
+        private readonly ConcurrentDictionary<string, UserDto?> _activeSessions = new();
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly GlobalVm _globalVm;
 
@@ -39,11 +39,11 @@ namespace FamilyApplication.AspireApp.Web.Sessions
         }
 
 
-        public ConcurrentDictionary<string, UserDto> ActiveSessions => _activeSessions;
+        public ConcurrentDictionary<string, UserDto?> ActiveSessions => _activeSessions;
 
         public event EventHandler? SessionChanged;
 
-        public void StartSession(string sessionId, UserDto userAccess)
+        public void StartSession(string sessionId, UserDto? userAccess)
         {
 
             _activeSessions[sessionId] = userAccess;
@@ -65,7 +65,8 @@ namespace FamilyApplication.AspireApp.Web.Sessions
         {
             if (_activeSessions.TryGetValue(sessionId, out var session))
             {
-                session.LastActivity = DateTime.UtcNow;
+                if (session != null)
+                    session.LastActivity = DateTime.UtcNow;
 
                 // Raise event
                 OnSessionChanged();

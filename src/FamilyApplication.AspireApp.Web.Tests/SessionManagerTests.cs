@@ -156,7 +156,7 @@ namespace FamilyApplication.AspireApp.Web.Tests
             _sessionManager.RefreshSession(sessionId);
 
             // Assert
-            Assert.True(_sessionManager.ActiveSessions[sessionId].LastActivity > lastActivity);
+            Assert.True(_sessionManager.ActiveSessions[sessionId]?.LastActivity > lastActivity);
             Assert.True(eventRaised);
         }
 

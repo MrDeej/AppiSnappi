@@ -2,7 +2,7 @@
 {
     public class DtoFamilyActivites
     {
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
         public DateTime At { get; set; }
 
     }

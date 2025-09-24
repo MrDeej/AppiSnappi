@@ -21,7 +21,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
         private string _lastChangeBy = "";
         private DateTime _lastChangedAt;
         private string _lottieProfile = "";
-        private UserWallet? _wallet = new();
+        private UserWallet _wallet = new();
         private NotificationSubscription? _notificationSubscription;
         private DateTimeOffset? _lastActivity;
         private ObservableCollection<FamilyTodoDto> todosToApprove = new();
@@ -161,7 +161,10 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.User
 
         public string? FamilyId
         {
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
             get => _familieId;
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
+
             set
             {
                 if (value == _familieId)

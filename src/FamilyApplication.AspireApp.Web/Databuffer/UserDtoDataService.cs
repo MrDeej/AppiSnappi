@@ -143,10 +143,13 @@ namespace FamilyApplication.AspireApp.Web.Databuffer
             await notificationManager.WebPushNotify(listNotifications, this, token);
         }
 
-        public async Task DisableEnableNotification(UserDto user, string lastChangeById)
+        public async Task DisableEnableNotification(UserDto? user, string lastChangeById)
         {
             try
             {
+
+                if (user == null)
+                    return;
 
                 using var task = vm.AddTask("Subscriber");
                 var token = task.GetToken();

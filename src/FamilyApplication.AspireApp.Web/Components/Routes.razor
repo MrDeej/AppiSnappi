@@ -13,9 +13,7 @@
                 </LayoutView>
             </NotFound>
         </Router>
-        <p style="color: var(--accent-fill-rest);">
-            Debug: AccentColor = @themeService.AccentColor, FillColor = @themeService.FillColor, NeutralBaseColor = @themeService.NeutralBaseColor
-        </p>
+
     </FluentDesignSystemProvider>
 </CascadingAuthenticationState>
 <FluentDialogProvider />
@@ -24,7 +22,7 @@
 <FluentToastProvider />
 
 @code {
-    [Inject] private ThemeService themeService { get; set; }
+    [Inject] private ThemeService themeService { get; set; } = default!;
     [Inject] NavigationManager NavigationManager { get; set; } = default!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
@@ -35,9 +33,8 @@
         {
             await themeService.LoadUserPreferences();
             StateHasChanged();
-            themeService.ThemeChanged += async (s, e) =>
+            themeService.ThemeChanged += (s, e) =>
             {
-                Console.WriteLine($"Theme changed: AccentColor = {themeService.AccentColor}, FillColor = {themeService.FillColor}, NeutralBaseColor = {themeService.NeutralBaseColor}");
                 var selectedTheme = themeService.ValgtPalett;
                 NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
                 themeService.ValgtPalett = selectedTheme;

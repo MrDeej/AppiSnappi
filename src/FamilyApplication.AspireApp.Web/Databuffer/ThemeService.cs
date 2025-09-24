@@ -12,7 +12,7 @@ public class ThemeService
 
     public string ValgtPalett { get; set; } = "Standard";
 
-    public event EventHandler ThemeChanged;
+    public event EventHandler? ThemeChanged;
 
     // Define palettes with lighter, playful colors for kids and subdued for adults
     public readonly Dictionary<string, (string Accent, string Fill, string Neutral)> _palettes = new()
@@ -87,7 +87,7 @@ public class ThemeService
         ThemeChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public async Task<string> GetCurrentPaletteName()
+    public string GetCurrentPaletteName()
     {
         foreach (var kvp in _palettes)
         {
@@ -96,6 +96,6 @@ public class ThemeService
                 return kvp.Key;
             }
         }
-        return "Sprø Banan"; // Default if no match
+        return "Standard"; // Default if no match
     }
 }

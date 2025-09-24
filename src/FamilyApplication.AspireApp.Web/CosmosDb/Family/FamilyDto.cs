@@ -9,7 +9,7 @@ namespace FamilyApplication.AspireApp.Web.CosmosDb.Family
     public class FamilyDto : INotifyPropertyChanged, IEntity
     {
         private string _id = Guid.NewGuid().ToString();
-        private string _familyId;
+        private string _familyId = default!;
         private string _navn = "";
         private DateTime _opprettetTid;
         private string _opprettetAv = "";

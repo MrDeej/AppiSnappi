@@ -170,7 +170,6 @@ public class FamilyEventService : IDisposable
 
     }
 
-    private Guid delayGuidPropertyChanged;
     private async void familyEvent_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         var tmpGuid = Guid.NewGuid();

@@ -13,6 +13,6 @@ namespace FamilyApplication.AspireApp.Web.Components.UserWallet
 
         public required UserDto User { get; set; }
 
-        public string Reason { get; set; }
+        public string Reason { get; set; } = default!;
     }
 }

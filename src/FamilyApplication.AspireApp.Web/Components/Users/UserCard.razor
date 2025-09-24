@@ -42,8 +42,10 @@
             <span>@User?.BirthDate - </span>
             <span>@User?.CurrentAge</span>
         </div>
-
+        @if (User != null)
+            { 
         <div class="info-item">
+            
             <MoneyVisualizer Amount="@User.Wallet.Amount" />
         </div>
         @if (User.TodosToApprove.Count > 1)
@@ -59,13 +61,14 @@
             <div class="info-item">
                 <label>@User.TodosToApprove.Count oppgave for godkjenning </label>
             </div>
+            }
         }
     </div>
     <div class="card-footer">
         <div class="info-item" style="width:100%">
             <FluentLayout>
                 <FluentStack Orientation="Orientation.Horizontal">
-                    @if (User.DisableNotifications == false && User.NotificationSubscription != null)
+                    @if (User?.DisableNotifications == false && User.NotificationSubscription != null)
                     {
                         <LottiePlayer Src="lottie/lottienotificationenable.json"
                                       Width="30px"
@@ -81,8 +84,8 @@
                     }
 
                     <FluentSpacer />
-                    <FluentButton Id="@($"btnEllipsisMenu-{User.Id}")" @onclick="() => _isEllipsisMenuOpen = !_isEllipsisMenuOpen" IconStart="(new Icons.Regular.Size16.MoreVertical())" />
-                    <FluentMenu Anchor="@($"btnEllipsisMenu-{User.Id}")" @bind-Open="_isEllipsisMenuOpen" VerticalThreshold="170">
+                    <FluentButton Id="@($"btnEllipsisMenu-{User?.Id}")" @onclick="() => _isEllipsisMenuOpen = !_isEllipsisMenuOpen" IconStart="(new Icons.Regular.Size16.MoreVertical())" />
+                    <FluentMenu Anchor="@($"btnEllipsisMenu-{User?.Id}")" @bind-Open="_isEllipsisMenuOpen" VerticalThreshold="170">
                         <FluentMenuItem OnClick="@NavigateToUserWallet">
                             Vis lommebok
                             <span slot="start">
@@ -96,7 +99,7 @@
                             </span>
                         </FluentMenuItem>
                         <FluentDivider />
-                        @if (User.NotificationSubscription != null)
+                        @if (User?.NotificationSubscription != null)
                         {
 
                             <FluentMenuItem OnClick="@SendTestWebPushNotifkasjon">
@@ -107,7 +110,7 @@
                             </FluentMenuItem>
 
                         }
-                        @if (User.DisableNotifications == true)
+                        @if (User?.DisableNotifications == true)
                         {
                             <FluentMenuItem OnClick="@(async () => await UserDtoDataService.DisableEnableNotification(User, SessionManager.GetMyUserDto().Id))">
                                 Skru på notifikasjoner
@@ -138,9 +141,7 @@
 @code
 {
     bool _isEllipsisMenuOpen;
-    bool _open = false;
-    [Parameter] public required UserDto User { get; set; } = default!;
-    private bool _isEditModalVisible = false;
+    [Parameter] public UserDto User { get; set; } = default!;
     private string UserTypeClass => User?.UserType == UserType.Parent ? "card-forelder" : "card-barn";
 
 
@@ -176,30 +177,7 @@
     }
 
 
-    // private async void DisableEnableNotification()
-    // {
-    // 	try
-    // 	{
 
-    // 		using var task = GlobalVm.AddTask("Subscriber");
-    // 		var token = task.GetToken();
-
-    // 		var clone = new UserDto();
-    // 		Eiriklb.Utils.ObjectSync.Instance.Update(clone, User);
-    // 		clone.DisableNotifications = !clone.DisableNotifications;
-    // 		if (clone.DisableNotifications == false)
-    // 			clone.NotificationSubscription = null;
-
-    // 		clone.LastChangeBy = SessionManager.GetMyUserDto().Id;
-    // 		clone.LastChangedAt = DateTime.UtcNow;
-    // 		await UserDtoDataService.Save(clone, token);
-
-    // 	}
-    // 	catch (Exception ex)
-    // 	{
-    // 		GlobalVm.AddException(ex);
-    // 	}
-    // }
 
 
     private async void SendTestWebPushNotifkasjon()
@@ -244,7 +222,6 @@
 
     private void HideEditModal()
     {
-        _isEditModalVisible = false;
         StateHasChanged();
     }
 
